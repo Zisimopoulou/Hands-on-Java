@@ -11,10 +11,6 @@ public class Order {
         return orderID;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
     public void setOrderID(String orderID) {
         this.orderID = orderID;
     }
