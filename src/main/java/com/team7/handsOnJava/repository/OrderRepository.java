@@ -4,7 +4,6 @@ import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Order;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
