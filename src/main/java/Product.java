@@ -1,4 +1,4 @@
-public class Product {
+public     class Product {
 
     private String productID;
     private String productPrice;
