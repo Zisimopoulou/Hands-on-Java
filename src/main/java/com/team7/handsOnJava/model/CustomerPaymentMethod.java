@@ -10,9 +10,10 @@ import lombok.ToString;
 @ToString
 public class CustomerPaymentMethod {
     private String paymentMethodID;
-    BigDecimal paymentAmount;
-    public CustomerPaymentMethod(String paymentMethodID, BigDecimal paymentAmount) {
+    private BigDecimal paymentAmount, discount;
+    public CustomerPaymentMethod(String paymentMethodID, BigDecimal paymentAmount, BigDecimal discount) {
         this.paymentMethodID= paymentMethodID;
         this.paymentAmount= paymentAmount;
+        this.discount= discount;
     }
 }
