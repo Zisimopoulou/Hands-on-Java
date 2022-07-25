@@ -8,8 +8,8 @@ import java.lang.String;
 @Setter
 public class CustomerAddress {
     String street;
-    int number, floor;
-    public CustomerAddress(String street, int number, int floor) {
+    Long number, floor;
+    public CustomerAddress(String street, Long number, Long floor) {
         this.street= street;
         this.number= number;
         this.floor= floor;

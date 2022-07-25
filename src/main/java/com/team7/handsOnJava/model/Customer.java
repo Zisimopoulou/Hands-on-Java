@@ -9,6 +9,7 @@ import java.lang.String;
 public class Customer {
     private String customerID, customerName, customerEmail;
     private CustomerPaymentMethod customerPaymentMethod;
+    private CustomerAddress customerAddress;
     private TypeOfCustomer typeOfCustomer;
     public Customer(String customerID, String customerName, String customerEmail,
                     CustomerAddress customerAddress, CustomerPaymentMethod customerPaymentMethod,
@@ -20,4 +21,5 @@ public class Customer {
         this.customerPaymentMethod= customerPaymentMethod;
         this.typeOfCustomer= typeOfCustomer;
     }
+
 }
