@@ -1,3 +1,5 @@
+package com.team7.handsOnJava.model;
+
 public class OrderItem {
     private String orderItemID;
     private Order order;
