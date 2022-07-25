@@ -9,10 +9,11 @@ import java.math.BigDecimal;
 @Setter
 public class CreditDebitCard extends CustomerPaymentMethod{
     private String cardNo, cardDate, cardCvv;
-    public CreditDebitCard(String cardNo, String cardDate, String cardCvv) {
+
+    public CreditDebitCard(String paymentMethodID, BigDecimal paymentAmount, BigDecimal discount) {
+        super(paymentMethodID, paymentAmount, BigDecimal.valueOf(0));
         this.cardNo= cardNo;
         this.cardDate= cardDate;
         this.cardCvv= cardCvv;
     }
-
 }
