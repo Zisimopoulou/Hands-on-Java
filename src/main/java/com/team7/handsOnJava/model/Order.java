@@ -1,3 +1,7 @@
+package com.team7.handsOnJava.model;
+
+import com.team7.handsOnJava.model.Customer;
+
 public class Order {
     private String orderID;
     private Customer customer;
