@@ -6,14 +6,14 @@ import com.team7.handsOnJava.model.OrderItem;
 import java.util.List;
 import java.util.Optional;
 
-public class OrderItemRepository implements CRUDRepository<OrderItem, Long> {
+public class OrderItemRepository implements CRUDRepository<OrderItem, String> {
     @Override
     public List<OrderItem> findAll() throws EshopException {
         return null;
     }
 
     @Override
-    public Optional<OrderItem> findByID(Long aLong) throws EshopException {
+    public Optional<OrderItem> findByID(String s) throws EshopException {
         return Optional.empty();
     }
 

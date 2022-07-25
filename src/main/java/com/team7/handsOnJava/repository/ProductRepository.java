@@ -5,14 +5,14 @@ import com.team7.handsOnJava.exception.EshopException;
 import java.util.List;
 import java.util.Optional;
 
-public class ProductRepository implements CRUDRepository<Product, Long>{
+public class ProductRepository implements CRUDRepository<Product, String>{
     @Override
     public List<Product> findAll() throws EshopException {
         return null;
     }
 
     @Override
-    public Optional<Product> findByID(Long aLong) throws EshopException {
+    public Optional<Product> findByID(String aString) throws EshopException {
         return Optional.empty();
     }
 
