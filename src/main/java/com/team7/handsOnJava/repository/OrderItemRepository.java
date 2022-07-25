@@ -1,6 +1,7 @@
 package com.team7.handsOnJava.repository;
 
 import com.team7.handsOnJava.exception.EshopException;
+import com.team7.handsOnJava.model.OrderItem;
 
 import java.util.List;
 import java.util.Optional;
