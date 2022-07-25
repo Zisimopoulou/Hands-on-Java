@@ -1,4 +1,6 @@
-public     class Product {
+package com.team7.handsOnJava.model;
+
+public class Product {
 
     private String productID;
     private String productPrice;
@@ -11,7 +13,7 @@ public     class Product {
         this.productPrice = productPrice;
     }
 
-    public String getproductID() {
+    public String getProductID() {
         return productID;
     }
 
@@ -28,7 +30,7 @@ public     class Product {
         this.productName = productName;
     }
 
-    public void setproductID() {
+    public void setProductID() {
         this.productID = productID;
     }
 
