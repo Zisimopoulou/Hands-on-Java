@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 public class CreditDebitCard extends CustomerPaymentMethod{
     private String cardNo, cardDate, cardCvv;
 
-    public CreditDebitCard(String paymentMethodID, BigDecimal paymentAmount, BigDecimal discount) {
-        super(paymentMethodID, paymentAmount, BigDecimal.valueOf(0));
+    public CreditDebitCard(String paymentMethodID, BigDecimal discount) {
+        super(paymentMethodID, BigDecimal.valueOf(1.5));
         this.cardNo= cardNo;
         this.cardDate= cardDate;
         this.cardCvv= cardCvv;

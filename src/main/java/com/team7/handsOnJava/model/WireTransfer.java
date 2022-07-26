@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 public class WireTransfer extends CustomerPaymentMethod{
     String customerIban, shopIban, transactionComment;
 
-    public WireTransfer(String paymentMethodID, BigDecimal paymentAmount, BigDecimal discount) {
-        super(paymentMethodID, paymentAmount, BigDecimal.valueOf(0.1));
+    public WireTransfer(String paymentMethodID, BigDecimal discount) {
+        super(paymentMethodID, BigDecimal.valueOf(0.1));
         this.customerIban= customerIban;
         this.shopIban= shopIban;
         this.transactionComment= transactionComment;
