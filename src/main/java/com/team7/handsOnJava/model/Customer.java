@@ -6,15 +6,15 @@ import java.lang.String;
 
 @Getter
 @Setter
-public class Customer {
-    private String customerID, customerName, customerEmail;
+public class Customer extends BaseModel {
+    private String customerName, customerEmail;
     private CustomerPaymentMethod customerPaymentMethod;
     private CustomerAddress customerAddress;
     private TypeOfCustomer typeOfCustomer;
     public Customer(String customerID, String customerName, String customerEmail,
                     CustomerAddress customerAddress, CustomerPaymentMethod customerPaymentMethod,
                     TypeOfCustomer typeOfCustomer) {
-        this.customerID= customerID;
+        super(customerID);
         this.customerName= customerName;
         this.customerEmail= customerEmail;
         this.customerAddress= customerAddress;

@@ -1,20 +1,14 @@
 package com.team7.handsOnJava.model;
 
-public class Product {
-
-    private String productID;
+public class Product extends BaseModel{
     private String productPrice;
     private String productName;
 
 
-    public Product(String productName, String productPrice, String productID) {
-        this.productID = productID;
+    public Product(String productID,String productName, String productPrice) {
+        super(productID);
         this.productName = productName;
         this.productPrice = productPrice;
-    }
-
-    public String getProductID() {
-        return productID;
     }
 
     public String getProductPrice() {
@@ -25,13 +19,8 @@ public class Product {
         return productName;
     }
 
-
     public void setProductName() {
         this.productName = productName;
-    }
-
-    public void setProductID() {
-        this.productID = productID;
     }
 
     public void setProductPrice() {
