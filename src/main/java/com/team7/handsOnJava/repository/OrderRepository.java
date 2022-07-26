@@ -1,10 +1,13 @@
 package com.team7.handsOnJava.repository;
 
 import com.team7.handsOnJava.exception.EshopException;
+import com.team7.handsOnJava.model.Customer;
 import com.team7.handsOnJava.model.Order;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +21,7 @@ public class OrderRepository implements CRUDRepository<Order, String>{
             PreparedStatement preparedstatement = connection.prepareStatement(
                     SqlCommandRepository.get("select.report.orderitem.000"))) {
 
-            log.debug("Finding all enrollments with student ID={}");
+            log.debug("Finding total number and cost of purchases for a particular product with order ID={}",);
 
             ResultSet resultSet = preparedstatement.executeQuery();
             final HashMap<Long, ArrayList<Long>> totNumAndCostOfPurchasesProduct = new HashMap<>();
@@ -54,7 +57,26 @@ public class OrderRepository implements CRUDRepository<Order, String>{
 
     @Override
     public Order create(Order order) throws EshopException {
-        return null;
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get("insert.table.order.000"), new String[]{"id"})) {
+
+            log.debug("Creating order {}", order);
+
+            preparedStatement.setDate(1, order.getOrderDate());
+            preparedStatement.setDate(2, order.getShipmentDate());
+            preparedStatement.setString(3, order.getStatus());
+            preparedStatement.setString(4, order.getCustomer().getId());
+            preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next(); // we only suppose that there is a single generated key
+            order.setId(String.valueOf(generatedKeys.getLong(1)));
+
+            return order;
+        } catch (SQLException e) {
+            throw new EshopException("Unable to create order.", e);
+        }
     }
 
     @Override
