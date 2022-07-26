@@ -2,6 +2,7 @@ package com.team7.handsOnJava.services;
 
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Customer;
+import com.team7.handsOnJava.model.Product;
 import com.team7.handsOnJava.repository.CRUDRepository;
 
 import java.util.List;
