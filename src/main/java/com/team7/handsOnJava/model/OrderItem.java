@@ -1,11 +1,14 @@
 package com.team7.handsOnJava.model;
 
+import java.math.BigDecimal;
+
 public class OrderItem extends BaseModel{
     private Order order;
     private Product product;
-    private Long quantity, price;
+    private BigDecimal price;
+    private Long quantity;
 
-    public OrderItem(String orderItemID, Order order, Product product, Long quantity, Long price) {
+    public OrderItem(String orderItemID, Order order, Product product, Long quantity, BigDecimal price) {
         super(orderItemID);
         this.order = order;
         this.product = product;
@@ -16,8 +19,8 @@ public class OrderItem extends BaseModel{
     public Long getQuantity(){
         return quantity;
     }
-    public Long getPrice() {return price;}
-    public void setPrice(Long price) {this.price = price;}
+    public BigDecimal getPrice() {return price;}
+    public void setPrice(BigDecimal price) {this.price = price;}
     public void setOrder(Order order) {
         this.order = order;
     }
