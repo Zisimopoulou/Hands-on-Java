@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
-public class CustomerPaymentMethod {
-    private String paymentMethodID;
-    private BigDecimal discount;
+public class CustomerPaymentMethod extends BaseModel{
+    private CreditDebitCard creditDebitCard;
+    private WireTransfer wireTransfer;
+    private Cash cash;
     public CustomerPaymentMethod(String paymentMethodID, BigDecimal discount) {
-        this.paymentMethodID= paymentMethodID;
-        this.discount= discount;
+        super(paymentMethodID);
     }
 }
