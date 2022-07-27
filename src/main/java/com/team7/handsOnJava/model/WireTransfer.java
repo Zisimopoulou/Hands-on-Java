@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class WireTransfer extends CustomerPaymentMethod{
+public class WireTransfer{
     String customerIban, shopIban, transactionComment;
-
-    public WireTransfer(String paymentMethodID, BigDecimal discount) {
-        super(paymentMethodID, BigDecimal.valueOf(0.1));
+    private BigDecimal discount;
+    public WireTransfer(BigDecimal discount, String customerIban, String shopIban, String transactionComment) {
+        this.discount= BigDecimal.valueOf(1.0);
         this.customerIban= customerIban;
         this.shopIban= shopIban;
         this.transactionComment= transactionComment;
