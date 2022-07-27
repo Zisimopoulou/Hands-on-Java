@@ -33,7 +33,6 @@ public class OrderService implements CRUDRepository<Order, String> {
     public Order create(Order order) throws EshopException {
         log.info("Creating Order");
         Order createdOrder = orderRepository.create(order);
-        createOrUpdateOrderItem(order);
         return createdOrder;
     }
 
