@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class CreditDebitCard extends CustomerPaymentMethod{
+public class CreditDebitCard{
     private String cardNo, cardDate, cardCvv;
-
-    public CreditDebitCard(String paymentMethodID, BigDecimal discount) {
-        super(paymentMethodID, BigDecimal.valueOf(1.5));
+    private BigDecimal discount;
+    public CreditDebitCard(BigDecimal discount, String cardNo, String cardDate, String cardCvv) {
+        this.discount= BigDecimal.valueOf(1.5);
         this.cardNo= cardNo;
         this.cardDate= cardDate;
         this.cardCvv= cardCvv;
