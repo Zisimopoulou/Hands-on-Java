@@ -69,7 +69,8 @@ public class OrderRepository implements CRUDRepository<Order, String>{
             preparedStatement.setDate(1, order.getOrderDate());
             preparedStatement.setDate(2, order.getShipmentDate());
             preparedStatement.setString(3, order.getStatus());
-            preparedStatement.setString(4, order.getCustomer().getId());
+            preparedStatement.setString(4, order.getChosenPaymentMethod());
+            preparedStatement.setString(5, order.getCustomer().getId());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
