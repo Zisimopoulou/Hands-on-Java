@@ -4,6 +4,7 @@ import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Customer;
 import com.team7.handsOnJava.model.Order;
 
+import com.team7.handsOnJava.model.Product;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -16,19 +17,21 @@ import java.util.*;
 @Slf4j
 public class OrderRepository implements CRUDRepository<Order, String>{
 
-    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct() throws EshopException {
+    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
         try(Connection connection = DataSource.getConnection();
             PreparedStatement preparedstatement = connection.prepareStatement(
-                    SqlCommandRepository.get("select.report.orderitem.000"))) {
+                    SqlCommandRepository.get("select.report.product.000"))) {
 
-            log.debug("Finding total number and cost of purchases for a particular product with order ID={}",);
+            log.debug("Finding total number and cost of purchases for a particular product with product ID={}",product.getId());
+
+            preparedstatement.setString(1, product.getId());
 
             ResultSet resultSet = preparedstatement.executeQuery();
             final HashMap<Long, ArrayList<Long>> totNumAndCostOfPurchasesProduct = new HashMap<>();
             while (resultSet.next()) {
                 ArrayList<Long> list = new ArrayList<>();
                 list.add(resultSet.getLong("total_quantity"));
-                list.add(1L);
+                list.add(resultSet.getLong("total_price"));
                 totNumAndCostOfPurchasesProduct.put(resultSet.getLong("product_id"),list);
                 list.remove(0);
                 list.remove(1);
