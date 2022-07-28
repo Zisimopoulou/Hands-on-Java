@@ -11,7 +11,8 @@ public class CustomerPaymentMethod extends BaseModel{
     private CreditDebitCard creditDebitCard;
     private WireTransfer wireTransfer;
     private Cash cash;
-    public CustomerPaymentMethod(String paymentMethodID) {
+    public CustomerPaymentMethod(String paymentMethodID, CreditDebitCard creditDebitCard,
+                                 WireTransfer wireTransfer, Cash cash) {
         super(paymentMethodID);
         this.creditDebitCard= creditDebitCard;
         this.wireTransfer= wireTransfer;
