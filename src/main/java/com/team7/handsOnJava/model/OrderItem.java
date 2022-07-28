@@ -20,6 +20,9 @@ public class OrderItem extends BaseModel{
         return quantity;
     }
     public BigDecimal getPrice() {return price;}
+
+    public Order getOrder() {return order;}
+    public Product getProduct() {return product;}
     public void setPrice(BigDecimal price) {this.price = price;}
     public void setOrder(Order order) {
         this.order = order;
