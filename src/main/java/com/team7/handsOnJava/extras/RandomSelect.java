@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 @Slf4j
 public class RandomSelect {
-    public static String selectRandomTypeOfCustomer(){
+    public String selectRandomTypeOfCustomer(){
         log.info("Randomly select type of customer");
         String [] arr = {"wireTransfer","creditCard","cash"};
         Random random = new Random();
@@ -15,7 +15,7 @@ public class RandomSelect {
         return arr[select];
     }
 
-    public static Product selectRandomProduct(List<Product> products){
+    public Product selectRandomProduct(List<Product> products){
         log.info("Randomly select a product");
         Random random = new Random();
         int select = random.nextInt(products.size());
