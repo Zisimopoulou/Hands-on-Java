@@ -14,6 +14,9 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
+
+    public OrderServiceImpl(OrderRepository orderRepository) {this.orderRepository = orderRepository;}
+
     @Override
     public List<Order> findAll() throws EshopException {
         return null;
