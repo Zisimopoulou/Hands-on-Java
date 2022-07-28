@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class CustomerRepository implements CRUDRepository<Customer, String>{
@@ -25,7 +26,7 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("delete.table.customer.000"))) {
-            log.debug("Deleting customer with ID = {}", order);
+            log.debug("Deleting customer with ID = {}", customer);
             preparedStatement.setString(1, customer.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -57,8 +58,27 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
         return null;
     }
 
-    public boolean update(Customer customer) throws EshopException {
-        return false;
+    public static boolean validEmail(String emailAddress, String regexPattern) {
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
+    }
+
+    public Customer update(Customer customer) throws EshopException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get("update.table.customer.000"))) {
+            log.debug("Updating customer {} with customerID={}", customer, customer.getId());
+            preparedStatement.setString(1, customer.getCustomerName());
+            preparedStatement.setString(2, customer.getCustomerEmail());
+            preparedStatement.setObject(3, customer.getCustomerPaymentMethod());
+            preparedStatement.setObject(4, customer.getCustomerAddress());
+            preparedStatement.setObject(5, customer.getTypeOfCustomer());
+            preparedStatement.executeUpdate();
+            return customer;
+        } catch (SQLException e) {
+            throw new EshopException("Unable to update customer.", e);
+        }
     }
 
     public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesPerCustomer() throws EshopException {
