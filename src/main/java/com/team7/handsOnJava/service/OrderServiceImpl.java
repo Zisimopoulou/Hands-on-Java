@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class OrderServiceImpl implements CRUDRepository<Order, String> {
+public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     @Override
@@ -19,11 +19,11 @@ public class OrderServiceImpl implements CRUDRepository<Order, String> {
         return null;
     }
 
-    @Override
+    /*@Override
     public Optional<Order> findByID(String s) throws EshopException {
         return Optional.empty();
     }
-
+*/
     @Override
     public void delete(Order order) throws EshopException {
         log.info("Deleting order.");
@@ -32,6 +32,21 @@ public class OrderServiceImpl implements CRUDRepository<Order, String> {
         } catch (EshopException e) {
             throw new EshopException("Unable to delete order.", e);
         }
+    }
+
+    @Override
+    public void deleteById(Long id) throws EshopException {
+
+    }
+
+    @Override
+    public boolean exists(Order entity) throws EshopException {
+        return false;
+    }
+
+    @Override
+    public Order get(Long id) throws EshopException {
+        return null;
     }
 
     public List<OrderItem> deleteOrderItem(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException {
@@ -70,6 +85,11 @@ public class OrderServiceImpl implements CRUDRepository<Order, String> {
         return null;
     }
 
+    @Override
+    public List<Order> createAll(List<Order> entities) throws EshopException {
+        return null;
+    }
+
     public void checkIfShipped(Order order) throws EshopException {
         if (order.getStatus() == "APPROVED") {
             throw new EshopException("Unable to change order. Items already shipped. Please contact costumer support.");
@@ -89,7 +109,7 @@ public class OrderServiceImpl implements CRUDRepository<Order, String> {
         }
     }
 
-    private BigDecimal DiscountPaymentMethod(OrderItem orderItem) throws EshopException {
+    public BigDecimal DiscountPaymentMethod(OrderItem orderItem) throws EshopException {
         BigDecimal discountPayment;
         switch (orderItem.getOrder().getChosenPaymentMethod()) {
             case "wireTransfer":
@@ -109,7 +129,7 @@ public class OrderServiceImpl implements CRUDRepository<Order, String> {
         }
         return discountPayment;
     }
-    private BigDecimal DiscountTypeOfCustomer(OrderItem orderItem) throws EshopException {
+    public BigDecimal DiscountTypeOfCustomer(OrderItem orderItem) throws EshopException {
         if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2cIndividual) {
             return BigDecimal.valueOf(0);
         } else if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2bBusiness) {
