@@ -39,7 +39,6 @@ public class ProductService implements CRUDRepository<Product, String> {
         return productFromDatabaseOptional;
     }
 
-
     public boolean update(Product product) throws EshopException {
         boolean isUpdated = false;
         if (product.getProductPrice() != null) {

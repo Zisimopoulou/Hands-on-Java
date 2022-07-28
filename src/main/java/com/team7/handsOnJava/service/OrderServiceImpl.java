@@ -22,11 +22,6 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    /*@Override
-    public Optional<Order> findByID(String s) throws EshopException {
-        return Optional.empty();
-    }
-*/
     @Override
     public void delete(Order order) throws EshopException {
         log.info("Deleting order.");
@@ -36,7 +31,19 @@ public class OrderServiceImpl implements OrderService {
             throw new EshopException("Unable to delete order.", e);
         }
     }
-
+    @Override
+    public List<Order> deleteOrder(String orderID, List<Order> orders) throws EshopException {
+        log.info("Deleting order.");
+        for (int i=0;i<orders.size();i++) {
+            if (orderID == orders.get(i).getId()) {
+                checkIfShipped(orders.get(i));
+                log.info("Deleting order item with ID = {}",orderID);
+                orders.remove(i);
+                return orders;
+            }
+        }
+        throw new EshopException("Unable to find order item in the provided order");
+    }
     @Override
     public void deleteById(Long id) throws EshopException {
 
@@ -51,31 +58,44 @@ public class OrderServiceImpl implements OrderService {
     public Order get(Long id) throws EshopException {
         return null;
     }
-
+    @Override
     public List<OrderItem> deleteOrderItem(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException {
         checkIfShipped(orderItem.getOrder());
         log.info("Deleting order item.");
         orderItems.remove(orderItem);
         return orderItems;
     }
-
-    /*
-        public boolean deleteOrderItemFromDatabase(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException {
-        log.info("Deleting order.");
-        return orderRepository.delete(order);
+    @Override
+    public boolean isOrderItemOnList(List<OrderItem> orderItems,OrderItem orderItem) {
+        for (OrderItem o : orderItems) {
+            if (o.getId() == orderItem.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
-
-     */
-
+    @Override
+    public List<OrderItem> deleteOrderItembyID(List<OrderItem> orderItems,String orderItemID) throws EshopException {
+        for (int i=0;i<orderItems.size();i++) {
+            if (orderItemID == orderItems.get(i).getId()) {
+                checkIfShipped(orderItems.get(i).getOrder());
+                log.info("Deleting order item with ID = {}",orderItemID);
+                orderItems.remove(i);
+                return orderItems;
+            }
+        }
+        throw new EshopException("Unable to find order item in the provided order");
+    }
     @Override
     public Order create(Order order) throws EshopException {
         if (order.getStatus() == "APPROVED") {
             log.info("Approving order.");
             return orderRepository.create(order);
         }
-        throw new EshopException("Order rejected."); //kapos kati na girizei gia na ginei to status rejected
+        throw new EshopException("Order rejected.");
     }
 
+    @Override
     public OrderItem createOrderItem(OrderItem orderItem) throws EshopException {
         if (orderItem.getOrder().getStatus() == "APPROVED") {
             log.info("Approving order item.");
@@ -98,10 +118,10 @@ public class OrderServiceImpl implements OrderService {
             throw new EshopException("Unable to change order. Items already shipped. Please contact costumer support.");
         }
     }
-
-    public Long changeOrderItemQuantity(Order order, OrderItem orderItem, Long quantity) throws EshopException {
+    @Override
+    public Long IncreaseOrDecreaseItemQuantity(OrderItem orderItem, Long quantity) throws EshopException {
         try {
-            checkIfShipped(order);
+            checkIfShipped(orderItem.getOrder());
             if (orderItem.getQuantity() + quantity > 0) {
                 log.info("Updating order item quantity");
                 return orderItem.getQuantity() + quantity;
@@ -111,40 +131,39 @@ public class OrderServiceImpl implements OrderService {
             throw new EshopException("The input quantity is invalid. It must be an integer.",e);
         }
     }
-
-    public BigDecimal DiscountPaymentMethod(OrderItem orderItem) throws EshopException {
-        BigDecimal discountPayment;
-        switch (orderItem.getOrder().getChosenPaymentMethod()) {
+    @Override
+    public BigDecimal DiscountPaymentMethod(Order order) {
+        BigDecimal discountPayment = BigDecimal.valueOf(0);
+        switch (order.getChosenPaymentMethod()) {
             case "wireTransfer":
                 log.info("Payment with wire transfer.");
-                discountPayment = orderItem.getOrder().getCustomer().getCustomerPaymentMethod().getWireTransfer().getDiscount();
+                discountPayment = order.getCustomer().getCustomerPaymentMethod().getWireTransfer().getDiscount();
                 break;
             case "creditCard":
                 log.info("Payment using debit credit card.");
-                discountPayment = orderItem.getOrder().getCustomer().getCustomerPaymentMethod().getCreditDebitCard().getDiscount();
+                discountPayment = order.getCustomer().getCustomerPaymentMethod().getCreditDebitCard().getDiscount();
                 break;
             case "cash":
                 log.info("Payment with cash.");
-                discountPayment = orderItem.getOrder().getCustomer().getCustomerPaymentMethod().getCash().getDiscount();
+                discountPayment = order.getCustomer().getCustomerPaymentMethod().getCash().getDiscount();
                 break;
-            default:
-                throw new EshopException("Unable to process payment method.");
         }
         return discountPayment;
     }
-    public BigDecimal DiscountTypeOfCustomer(OrderItem orderItem) throws EshopException {
-        if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2cIndividual) {
+    @Override
+    public BigDecimal DiscountTypeOfCustomer(Order order) {
+        if (order.getCustomer().getTypeOfCustomer() instanceof B2cIndividual) {
             return BigDecimal.valueOf(0);
-        } else if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2bBusiness) {
+        } else if (order.getCustomer().getTypeOfCustomer() instanceof B2bBusiness) {
             return BigDecimal.valueOf(0.2);
-        } else if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2gGovernment) {
+        } else {
             return BigDecimal.valueOf(0.5);
         }
-        throw new EshopException("Invalid type of customer");
     }
-    public BigDecimal FinalPriceOfOrderItem(OrderItem orderItem,Product product) throws EshopException {
-        checkIfShipped(orderItem.getOrder());
+    @Override
+    public BigDecimal FinalPriceOfOrderItem(Order order,Product product)  {
         return product.getProductPrice()
-                .subtract(product.getProductPrice().multiply((DiscountPaymentMethod(orderItem).add(DiscountTypeOfCustomer(orderItem)))));
+                .subtract(product.getProductPrice().multiply((DiscountPaymentMethod(order).add(DiscountTypeOfCustomer(order)))));
     }
+
 }
