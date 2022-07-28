@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class CreditDebitCard{
     private String cardNo, cardDate, cardCvv;
     private BigDecimal discount;
-    public CreditDebitCard(BigDecimal discount, String cardNo, String cardDate, String cardCvv) {
+    public CreditDebitCard(String cardNo, String cardDate, String cardCvv) {
         this.discount= BigDecimal.valueOf(1.5);
         this.cardNo= cardNo;
         this.cardDate= cardDate;
