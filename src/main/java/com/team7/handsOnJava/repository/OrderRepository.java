@@ -54,8 +54,7 @@ public class OrderRepository implements CRUDRepository<Order, String>{
     }
 
     @Override
-    public boolean delete(Order order) throws EshopException {
-        return false;
+    public void delete(Order order) throws EshopException {
     }
 
     @Override

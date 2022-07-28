@@ -10,7 +10,7 @@ public interface CRUDRepository<T, ID> {
 
     Optional<T> findByID(ID id) throws EshopException;
 
-    boolean delete(T t) throws EshopException;
+    void delete(T t) throws EshopException;
 
     T create(T t) throws EshopException;
 
