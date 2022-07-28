@@ -16,5 +16,4 @@ public interface AbstractService<T, ID> {
 
     List<T> createAll(T... ts) throws EshopException;
 
-    boolean update(T t) throws EshopException;
 }
