@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class OrderService implements CRUDRepository<Order, String> {
+public class OrderServiceImpl implements CRUDRepository<Order, String> {
 
     private OrderRepository orderRepository;
     @Override
@@ -25,24 +25,68 @@ public class OrderService implements CRUDRepository<Order, String> {
     }
 
     @Override
-    public boolean delete(Order order) throws EshopException {
-        return false;
+    public void delete(Order order) throws EshopException {
+        log.info("Deleting order.");
+        try {
+            orderRepository.delete(order);
+        } catch (EshopException e) {
+            throw new EshopException("Unable to delete order.", e);
+        }
     }
+
+    public List<OrderItem> deleteOrderItem(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException {
+        checkIfShipped(orderItem.getOrder());
+        log.info("Deleting order item.");
+        orderItems.remove(orderItem);
+        return orderItems;
+    }
+
+    /*
+        public boolean deleteOrderItemFromDatabase(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException {
+        log.info("Deleting order.");
+        return orderRepository.delete(order);
+    }
+
+     */
 
     @Override
     public Order create(Order order) throws EshopException {
-        log.info("Creating Order");
-        Order createdOrder = orderRepository.create(order);
-        return createdOrder;
+        if (order.getStatus() == "APPROVED") {
+            log.info("Approving order.");
+            return orderRepository.create(order);
+        }
+        throw new EshopException("Order rejected."); //kapos kati na girizei gia na ginei to status rejected
     }
 
+    public OrderItem createOrderItem(OrderItem orderItem) throws EshopException {
+        if (orderItem.getOrder().getStatus() == "APPROVED") {
+            log.info("Approving order item.");
+            return orderRepository.createOrderItem(orderItem);
+        }
+        throw new EshopException("Order rejected.");
+    }
     @Override
     public List<Order> createAll(Order... orders) throws EshopException {
         return null;
     }
 
-    public boolean update(Order order) throws EshopException {
-        return false;
+    public void checkIfShipped(Order order) throws EshopException {
+        if (order.getStatus() == "APPROVED") {
+            throw new EshopException("Unable to change order. Items already shipped. Please contact costumer support.");
+        }
+    }
+
+    public Long changeOrderItemQuantity(Order order, OrderItem orderItem, Long quantity) throws EshopException {
+        try {
+            checkIfShipped(order);
+            if (orderItem.getQuantity() + quantity > 0) {
+                log.info("Updating order item quantity");
+                return orderItem.getQuantity() + quantity;
+            }
+            throw new EshopException("Quantity of the item needs to be a positive number.");
+        } catch (IllegalArgumentException e) {
+            throw new EshopException("The input quantity is invalid. It must be an integer.",e);
+        }
     }
 
     private BigDecimal DiscountPaymentMethod(OrderItem orderItem) throws EshopException {
@@ -66,7 +110,7 @@ public class OrderService implements CRUDRepository<Order, String> {
         return discountPayment;
     }
     private BigDecimal DiscountTypeOfCustomer(OrderItem orderItem) throws EshopException {
-         if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2cIndividual) {
+        if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2cIndividual) {
             return BigDecimal.valueOf(0);
         } else if (orderItem.getOrder().getCustomer().getTypeOfCustomer() instanceof B2bBusiness) {
             return BigDecimal.valueOf(0.2);
@@ -76,6 +120,7 @@ public class OrderService implements CRUDRepository<Order, String> {
         throw new EshopException("Invalid type of customer");
     }
     public BigDecimal FinalPriceOfOrderItem(OrderItem orderItem,Product product) throws EshopException {
+        checkIfShipped(orderItem.getOrder());
         return product.getProductPrice()
                 .subtract(product.getProductPrice().multiply((DiscountPaymentMethod(orderItem).add(DiscountTypeOfCustomer(orderItem)))));
     }
