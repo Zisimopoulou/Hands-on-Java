@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class WireTransfer{
     String customerIban, shopIban, transactionComment;
     private BigDecimal discount;
-    public WireTransfer(BigDecimal discount, String customerIban, String shopIban, String transactionComment) {
+    public WireTransfer(String customerIban, String shopIban, String transactionComment) {
         this.discount= BigDecimal.valueOf(1.0);
         this.customerIban= customerIban;
         this.shopIban= shopIban;
