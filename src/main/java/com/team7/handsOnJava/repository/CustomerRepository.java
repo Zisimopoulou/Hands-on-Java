@@ -7,8 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 public class CustomerRepository implements CRUDRepository<Customer, String>{
@@ -54,5 +53,30 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
     @Override
     public boolean update(Customer customer) throws EshopException {
         return false;
+    }
+
+    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesPerCustomer() throws EshopException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedstatement = connection.prepareStatement(
+                     SqlCommandRepository.get("select.report.customer.001"))) {
+
+            log.debug("Finding total number and cost of purchases per customer." );
+
+            ResultSet resultSet = preparedstatement.executeQuery();
+            final HashMap<Long, ArrayList<Long>> totNumAndCostOfPurchasesProduct = new HashMap<>();
+            while (resultSet.next()) {
+                ArrayList<Long> list = new ArrayList<>();
+                list.add(resultSet.getLong("total_quantity"));
+                list.add(resultSet.getLong("total_price"));
+                totNumAndCostOfPurchasesProduct.put(resultSet.getLong("customer_id"), list);
+                list.remove(0);
+                list.remove(1);
+            }
+
+            return totNumAndCostOfPurchasesProduct;
+
+        } catch (SQLException e) {
+            throw new EshopException("Could not find total number or cost of purchases for product", e);
+        }
     }
 }
