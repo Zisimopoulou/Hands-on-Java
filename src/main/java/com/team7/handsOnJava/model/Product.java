@@ -1,6 +1,10 @@
 package com.team7.handsOnJava.model;
 
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
+
+@SuperBuilder
 
 public class Product extends BaseModel{
     private BigDecimal productPrice;
@@ -20,6 +24,10 @@ public class Product extends BaseModel{
     public String getProductName() {
         return productName;
     }
+
+    public  String getProductId() { return getModelId(); }
+
+    public void setProductId(String productId) {setModelId(productId);}
 
     public void setProductName(String productName) {this.productName = productName;}
 
