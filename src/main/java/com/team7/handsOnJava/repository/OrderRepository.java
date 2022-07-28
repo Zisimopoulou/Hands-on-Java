@@ -4,6 +4,7 @@ import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Customer;
 import com.team7.handsOnJava.model.Order;
 
+import com.team7.handsOnJava.model.OrderItem;
 import com.team7.handsOnJava.model.Product;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,6 +56,18 @@ public class OrderRepository implements CRUDRepository<Order, String>{
 
     @Override
     public void delete(Order order) throws EshopException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get("delete.table.order.000"))) {
+
+            log.debug("Deleting order with ID = {}", order);
+
+            preparedStatement.setString(1, order.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new EshopException("Unable to delete order.", e);
+        }
     }
 
     @Override
@@ -82,6 +95,28 @@ public class OrderRepository implements CRUDRepository<Order, String>{
         }
     }
 
+    public OrderItem createOrderItem(OrderItem orderItem) throws EshopException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get("insert.table.orderitem.000"), new String[]{"id"})) {
+
+            log.debug("Creating order ietem with ID {}", orderItem.getId());
+
+            preparedStatement.setString(1, orderItem.getProduct().getId());
+            preparedStatement.setLong(2, orderItem.getQuantity());
+            preparedStatement.setBigDecimal(3, orderItem.getPrice());
+            preparedStatement.setString(4, orderItem.getOrder().getId());
+            preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            orderItem.setId(String.valueOf(generatedKeys.getLong(1)));
+
+            return orderItem;
+        } catch (SQLException e) {
+            throw new EshopException("Unable to create order.", e);
+        }
+    }
     @Override
     public List<Order> createAll(Order... orders) throws EshopException {
         return null;
