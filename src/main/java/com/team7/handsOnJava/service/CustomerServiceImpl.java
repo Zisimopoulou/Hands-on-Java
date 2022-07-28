@@ -2,7 +2,7 @@ package com.team7.handsOnJava.service;
 
 import com.team7.handsOnJava.model.*;
 
-public abstract class CustomerServiceImpl {
+public class CustomerServiceImpl {
     public void changeEmail(Customer customer, String newEmail){
         customer.setCustomerEmail(newEmail);
     }
