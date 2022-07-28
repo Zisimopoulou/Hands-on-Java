@@ -3,6 +3,7 @@ package com.team7.handsOnJava.repository;
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Customer;
 import lombok.extern.slf4j.Slf4j;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,20 +12,27 @@ import java.util.*;
 
 @Slf4j
 public class CustomerRepository implements CRUDRepository<Customer, String>{
-    @Override
+
     public List<Customer> findAll() throws EshopException {
         return null;
     }
 
-    @Override
     public Optional<Customer> findByID(String s) throws EshopException {
         return Optional.empty();
     }
-    @Override
-    public boolean delete(Customer customer) throws EshopException {
-        return false;
+
+    public void delete(Customer customer) throws EshopException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get("delete.table.customer.000"))) {
+            log.debug("Deleting customer with ID = {}", order);
+            preparedStatement.setString(1, customer.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new EshopException("Unable to delete order.", e);
+        }
     }
-    @Override
+
     public Customer create(Customer customer) throws EshopException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -45,12 +53,10 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
         }
     }
 
-    @Override
     public List<Customer> createAll(Customer... customers) throws EshopException {
         return null;
     }
 
-    @Override
     public boolean update(Customer customer) throws EshopException {
         return false;
     }
@@ -59,9 +65,7 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedstatement = connection.prepareStatement(
                      SqlCommandRepository.get("select.report.customer.001"))) {
-
             log.debug("Finding total number and cost of purchases per customer." );
-
             ResultSet resultSet = preparedstatement.executeQuery();
             final HashMap<Long, ArrayList<Long>> totNumAndCostOfPurchasesProduct = new HashMap<>();
             while (resultSet.next()) {
@@ -72,9 +76,7 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
                 list.remove(0);
                 list.remove(1);
             }
-
             return totNumAndCostOfPurchasesProduct;
-
         } catch (SQLException e) {
             throw new EshopException("Could not find total number or cost of purchases for product", e);
         }
