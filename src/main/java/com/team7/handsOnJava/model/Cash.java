@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Setter
 public class Cash{
     private BigDecimal discount;
-    public Cash(BigDecimal discount) {
+    public Cash() {
         this.discount= BigDecimal.valueOf(0);
     }
 }
