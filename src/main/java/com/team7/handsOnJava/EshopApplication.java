@@ -3,16 +3,23 @@ package com.team7.handsOnJava;
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.*;
 import com.team7.handsOnJava.repository.CustomerRepository;
+import com.team7.handsOnJava.repository.DataSource;
 import com.team7.handsOnJava.repository.OrderRepository;
+import com.team7.handsOnJava.repository.SqlCommandRepository;
 import com.team7.handsOnJava.service.CustomerServiceImpl;
 import com.team7.handsOnJava.service.OrderServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static java.lang.System.exit;
 
 
 @Slf4j
@@ -23,6 +30,7 @@ public class  EshopApplication {
     //private static final ProductServiceImpl productService = new ProductServiceImpl(new ProductRepository());
 
     public static void main(String[] args) throws EshopException {
+        initializeDatabase();
 
         List<Customer> customers = customerCreation();
         List<Product> products = productCreation();
@@ -108,6 +116,50 @@ public class  EshopApplication {
             }
         } catch (EshopException e) {
             throw new EshopException("Unable to add orders to the order list.",e);
+        }
+    }
+
+    private static void CreateQueries(String command) {
+        try (Connection connection = DataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            log.info("Creating tables successful.");
+        } catch (SQLException e) {
+            log.error("Unable to create tables.", e);
+            exit(-1);
+        }
+    }
+
+    private static void DropQueries (String command) {
+        try (Connection connection = DataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            log.info("Dropping tables successful.");
+        } catch (SQLException e) {
+            log.error("Unable to drop tables.", e);
+            exit(-1);
+        }
+    }
+    public static void initializeDatabase() {
+        log.info("Initialize Database.");
+        dropTables();
+        createTables();
+    }
+    private static void dropTables() {
+        List<String> dropTables = List.of(SqlCommandRepository.get("drop.table.customer"),
+                SqlCommandRepository.get("drop.table.order"),
+                SqlCommandRepository.get("drop.table.product"),
+                SqlCommandRepository.get("drop.table.orderitem"));
+        for (int i=0;i<dropTables.size();i++){
+            DropQueries(dropTables.get(i));
+        }
+    }
+
+    private static void createTables() {
+        List<String> createTables = List.of(SqlCommandRepository.get("create.table.customer"),
+                SqlCommandRepository.get("create.table.order"),
+                SqlCommandRepository.get("create.table.product"),
+                SqlCommandRepository.get("create.table.orderitem"));
+        for (int i=0;i<createTables.size();i++){
+            CreateQueries(createTables.get(i));
         }
     }
 }
