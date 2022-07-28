@@ -88,8 +88,4 @@ public class OrderRepository implements CRUDRepository<Order, String>{
         return null;
     }
 
-    @Override
-    public boolean update(Order order) throws EshopException {
-        return false;
-    }
 }
