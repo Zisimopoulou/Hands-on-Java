@@ -1,6 +1,7 @@
 package com.team7.handsOnJava;
 
 import com.team7.handsOnJava.exception.EshopException;
+import com.team7.handsOnJava.extras.RandomSelect;
 import com.team7.handsOnJava.model.*;
 import com.team7.handsOnJava.repository.CustomerRepository;
 import com.team7.handsOnJava.repository.DataSource;
@@ -28,6 +29,7 @@ public class EshopApplication {
     private static final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
     //private static final CustomerServiceImpl customerService = new CustomerServiceImpl(new CustomerRepository());
     //private static final ProductServiceImpl productService = new ProductServiceImpl(new ProductRepository());
+    private static final RandomSelect randomSelect = new RandomSelect();
 
     public static void main(String[] args) throws EshopException {
         EshopApplication application = new EshopApplication();
@@ -41,7 +43,49 @@ public class EshopApplication {
         List<Order> orders = orderCreation(customers);
         List<OrderItem> orderItems = orderItemCreation(orders,products);
 
-        //orderShowcase(customers);
+        orderShowcase(orders,orderItems,products.get(0));
+    }
+
+    private void orderShowcase(List<Order> orders, List<OrderItem> orderItems,Product product) {
+        try {
+            log.info("------------------Order and OrderItem Showcase------------------");
+            Order orderShowcase = orders.get(0);
+            OrderItem orderItemShowcase = orderItems.get(1);
+
+            log.info("------------------Change quantity of order item------------------");
+            Long amount = 3L;
+            log.info("Quantity before adding amount = {} is {}",amount,orderItemShowcase.getQuantity());
+            orderItemShowcase.setQuantity(orderService.IncreaseOrDecreaseItemQuantity(orderItemShowcase,3L));
+            log.info("Quantity after adding amount = {} is {}",amount,orderItemShowcase.getQuantity());
+
+            log.info("------------------Add order item in order = {}------------------",orderShowcase.getId());
+            OrderItem newOrderItem = new OrderItem(String.valueOf(orderItems.size()+1),orderShowcase,product,1L,orderService.FinalPriceOfOrderItem(orderShowcase,product));
+            if(!orderService.isOrderItemOnList(orderItems,newOrderItem)) {
+                orderItems.add(newOrderItem);
+                log.info("------------------Item with ID = {}, was added to the list------------------", newOrderItem.getId());
+
+            } else {
+                log.info("Item already on the list.");
+            }
+
+            log.info("------------------Delete order item with ID = {}------------------", orderItemShowcase.getId());
+            orderItems = orderService.deleteOrderItembyID(orderItems,orderItemShowcase.getId());
+
+            log.info("------------------Delete order with ID = {}------------------",orderShowcase.getId());
+            orders = orderService.deleteOrder(orderShowcase.getId(),orders);
+
+            log.info("------------------Create Order and Order Item in Database------------------");
+            orders.get(0).setStatus("APPROVED");
+            shipOrder(orders.get(0));
+
+
+        } catch (EshopException e) {
+            log.error("Unable to complete order Showcase.",e);
+        }
+    }
+
+    private static void shipOrder(Order order) throws EshopException {
+        orderService.create(order);
     }
 
     private static List<Product> productCreation() {
@@ -65,43 +109,32 @@ public class EshopApplication {
     }
     private static List<Order> orderCreation(List<Customer> customers) {
         List<Order> orders = new ArrayList<>();
-            log.info("------------------Create list of orders for every customer------------------");
+        log.info("------------------Create list of orders for every customer------------------");
 
-            int counter = 0;
-            for (int i=0;i<customers.size();i++) {
-                for (int j = 0; j<2; j++) {
-                    orders.add(new Order(String.valueOf(customers.size() + counter), "Pending", customers.get(i), selectRandomTypeOfCustomer()));
-                    counter++;
-                }
+        int counter = 0;
+        for (int i=0;i<customers.size();i++) {
+            for (int j = 0; j<2; j++) {
+                orders.add(new Order(String.valueOf(customers.size() + counter), "Pending", customers.get(i), randomSelect.selectRandomTypeOfCustomer()));
+                counter++;
             }
-            return orders;
+        }
+        return orders;
     }
 
     private static List<OrderItem> orderItemCreation(List<Order> orders,List<Product> products) {
         List<OrderItem> orderItems = new ArrayList<>();
 
-            log.info("------------------Create list of order items for every order------------------");
+        log.info("------------------Create list of order items for every order------------------");
 
-            int counter = 0;
-            for (int i=0;i<orders.size();i++) {
-                Product randomProduct = selectRandomProduct(products);
-                orderItems.add(new OrderItem(String.valueOf(orders.size() + counter), orders.get(i), randomProduct, (long) (new Random().nextInt(10) + 1), randomProduct.getProductPrice()));
-            }
-            return orderItems;
-    }
-    private static String selectRandomTypeOfCustomer(){
-        log.info("Randomly select type of customer");
-        String [] arr = {"wireTransfer","creditCard","cash"};
-        Random random = new Random();
-        int select = random.nextInt(arr.length);
-        return arr[select];
-    }
-
-    private static Product selectRandomProduct(List<Product> products){
-        log.info("Randomly select a product");
-        Random random = new Random();
-        int select = random.nextInt(products.size());
-        return products.get(select);
+        int counter = 0;
+        for (int i=0;i<orders.size();i++) {
+            Product randomProduct = randomSelect.selectRandomProduct(products);
+            orderItems.add(new OrderItem(String.valueOf(orders.size() + counter),
+                    orders.get(i), randomProduct,
+                    (long) (new Random().nextInt(10) + 1),
+                    orderService.FinalPriceOfOrderItem(orders.get(i),randomProduct)));
+        }
+        return orderItems;
     }
 
 
