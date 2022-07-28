@@ -23,13 +23,17 @@ import static java.lang.System.exit;
 
 
 @Slf4j
-public class  EshopApplication {
+public class EshopApplication {
 
     private static final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
     //private static final CustomerServiceImpl customerService = new CustomerServiceImpl(new CustomerRepository());
     //private static final ProductServiceImpl productService = new ProductServiceImpl(new ProductRepository());
 
     public static void main(String[] args) throws EshopException {
+        EshopApplication application = new EshopApplication();
+    }
+
+    public EshopApplication() {
         initializeDatabase();
 
         List<Customer> customers = customerCreation();
@@ -38,7 +42,6 @@ public class  EshopApplication {
         List<OrderItem> orderItems = orderItemCreation(orders,products);
 
         //orderShowcase(customers);
-
     }
 
     private static List<Product> productCreation() {
@@ -60,9 +63,8 @@ public class  EshopApplication {
 
         return List.of(Alexandra, Helena);
     }
-    private static List<Order> orderCreation(List<Customer> customers) throws EshopException {
+    private static List<Order> orderCreation(List<Customer> customers) {
         List<Order> orders = new ArrayList<>();
-        try {
             log.info("------------------Create list of orders for every customer------------------");
 
             int counter = 0;
@@ -73,25 +75,19 @@ public class  EshopApplication {
                 }
             }
             return orders;
-        } catch (IllegalArgumentException e) {
-            throw new EshopException("Unable to create list of orders.", e);
-        }
     }
 
-    private static List<OrderItem> orderItemCreation(List<Order> orders,List<Product> products) throws EshopException {
+    private static List<OrderItem> orderItemCreation(List<Order> orders,List<Product> products) {
         List<OrderItem> orderItems = new ArrayList<>();
-        try {
+
             log.info("------------------Create list of order items for every order------------------");
 
             int counter = 0;
-            for (int i=0;i<orders.size();i++){
+            for (int i=0;i<orders.size();i++) {
                 Product randomProduct = selectRandomProduct(products);
-                orderItems.add(new OrderItem(String.valueOf(orders.size()+counter),orders.get(i),randomProduct, (long) (new Random().nextInt(10) + 1),randomProduct.getProductPrice()));
+                orderItems.add(new OrderItem(String.valueOf(orders.size() + counter), orders.get(i), randomProduct, (long) (new Random().nextInt(10) + 1), randomProduct.getProductPrice()));
             }
             return orderItems;
-        } catch (IllegalArgumentException e) {
-            throw new EshopException("Unable to create list of orders.", e);
-        }
     }
     private static String selectRandomTypeOfCustomer(){
         log.info("Randomly select type of customer");
