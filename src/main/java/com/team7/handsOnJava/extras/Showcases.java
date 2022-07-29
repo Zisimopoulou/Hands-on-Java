@@ -26,7 +26,7 @@ public class Showcases{
             log.info("------------------Customer Showcase------------------");
             Customer customerShowcase = customers.get(0);
 
-            log.info("------------------Delete order with ID = {}------------------", orderShowcase.getId());
+            log.info("------------------Delete customer with ID = {}------------------", customerShowcase.getId());
             customers= customerService.deleteCustomer(customerShowcase.getId(), customers);
 
             log.info("------------------Create Customer in Database------------------");
