@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
-
+//Βγάζει errors και δεν προλάβαμε να διορθώσουμε τα queries.
 @Slf4j
 public class Showcases{
     private static final CustomerServiceImpl customerService = new CustomerServiceImpl(new CustomerRepository());
