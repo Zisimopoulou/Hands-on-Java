@@ -3,9 +3,10 @@ package com.team7.handsOnJava.service;
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.*;
 import com.team7.handsOnJava.repository.CustomerRepository;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-
+@Slf4j
 public class CustomerServiceImpl {
     private CustomerRepository customerRepository;
     public CustomerServiceImpl(CustomerRepository customerRepository) {this.customerRepository = customerRepository;}
