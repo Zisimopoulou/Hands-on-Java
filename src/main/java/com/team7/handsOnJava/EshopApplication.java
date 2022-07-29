@@ -57,7 +57,7 @@ public class EshopApplication {
     }
 
     public List<Customer> customerCreation() {
-        CustomerAddress AlexandraAddress = new CustomerAddress("1", "Plapouta", 31, 3);
+        CustomerAddress AlexandraAddress = new CustomerAddress("1", "Plapouta", 31L, 3L);
         CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261","3/2025","538");
         WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927","GR8501442972218564578227146","Wired Transfer");
         Cash AlexandraCash = new Cash();
@@ -124,7 +124,9 @@ public class EshopApplication {
     }
     private static void dropTables() {
         List<String> dropTables = List.of(SqlCommandRepository.get("drop.table.customer"),
-                SqlCommandRepository.get("drop.table.order"));
+                SqlCommandRepository.get("drop.table.order"),
+                SqlCommandRepository.get("drop.table.product"),
+                SqlCommandRepository.get("drop.table.orderitem"));
         for (int i=0;i<dropTables.size();i++){
             DropQueries(dropTables.get(i));
         }
@@ -132,11 +134,12 @@ public class EshopApplication {
 
     private static void createTables() {
         List<String> createTables = List.of(SqlCommandRepository.get("create.table.customer"),
-                SqlCommandRepository.get("create.table.order"));
+                SqlCommandRepository.get("create.table.order"),
+                SqlCommandRepository.get("create.table.product"),
+                SqlCommandRepository.get("create.table.orderitem"));
         for (int i=0;i<createTables.size();i++){
             CreateQueries(createTables.get(i));
         }
     }
-
 
 }
