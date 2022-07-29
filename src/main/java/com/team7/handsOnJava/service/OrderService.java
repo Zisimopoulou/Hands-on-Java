@@ -9,15 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderService extends BaseService<Order> {
-    public List<OrderItem> deleteOrderItem(List<OrderItem> orderItems, OrderItem orderItem) throws EshopException;
-    /*
-        public boolean deleteOrderItemFromDatabase(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException;
-
-     */
+    List<OrderItem> deleteOrderItem(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException;
+    List<Order> deleteOrder(String orderID, List<Order> orders) throws EshopException;
+    List<OrderItem> deleteOrderItembyID(List<OrderItem> orderItems,String orderItemID) throws EshopException;
+    boolean isOrderItemOnList(List<OrderItem> orderItems,OrderItem orderItem);
     OrderItem createOrderItem(OrderItem orderItem) throws EshopException;
     void checkIfShipped(Order order) throws EshopException;
-    Long changeOrderItemQuantity(Order order, OrderItem orderItem, Long quantity) throws EshopException;
-    BigDecimal DiscountPaymentMethod(OrderItem orderItem) throws EshopException;
-    BigDecimal DiscountTypeOfCustomer(OrderItem orderItem) throws EshopException;
-    BigDecimal FinalPriceOfOrderItem(OrderItem orderItem,Product product) throws EshopException;
+    Long IncreaseOrDecreaseItemQuantity(OrderItem orderItem, Long quantity) throws EshopException;
+    BigDecimal DiscountPaymentMethod(Order order);
+    BigDecimal DiscountTypeOfCustomer(Order order);
+    BigDecimal FinalPriceOfOrderItem(Order order,Product product);
 }
