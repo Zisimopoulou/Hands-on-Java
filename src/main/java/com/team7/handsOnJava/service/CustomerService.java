@@ -1,7 +1,9 @@
 package com.team7.handsOnJava.service;
 
+import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.*;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 public interface CustomerService {
@@ -17,5 +19,7 @@ public interface CustomerService {
     public void changeCreditDebitCard(Customer customer,  CreditDebitCard creditDebitCard);
     public void changeCash(Customer customer, Cash cash);
     public void changeWireTransfer(Customer customer, WireTransfer wireTransfer);
+    public Customer create(Customer customer);
+    List<Customer> deleteCustomer(String customerID, List<Customer> customers) throws EshopException;
 
 }

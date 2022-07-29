@@ -5,7 +5,9 @@ import com.team7.handsOnJava.model.Customer;
 import com.team7.handsOnJava.model.Order;
 import com.team7.handsOnJava.model.OrderItem;
 import com.team7.handsOnJava.model.Product;
+import com.team7.handsOnJava.repository.CustomerRepository;
 import com.team7.handsOnJava.repository.OrderRepository;
+import com.team7.handsOnJava.service.CustomerServiceImpl;
 import com.team7.handsOnJava.service.OrderServiceImpl;
 import com.team7.handsOnJava.service.ReportingService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +16,27 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class Showcases {
+public class Showcases{
+    private static final CustomerServiceImpl customerService = new CustomerServiceImpl(new CustomerRepository());
     private static final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
     private static final ReportingService reportingService = new ReportingService();
+
+    public void customerShowcase(Customer customer, List<Customer> customers) {
+        try {
+            log.info("------------------Customer Showcase------------------");
+            Customer customerShowcase = customers.get(0);
+
+            log.info("------------------Delete order with ID = {}------------------", orderShowcase.getId());
+            customers= customerService.deleteCustomer(customerShowcase.getId(), customers);
+
+            log.info("------------------Create Customer in Database------------------");
+            customers.get(0).setStatus("APPROVED");
+            customerService.create(customer);
+        } catch (EshopException e) {
+            log.error("Unable to complete customer Showcase.", e);
+        }
+    }
+
 
     public void orderShowcase(List<Order> orders, List<OrderItem> orderItems, Product product) {
         try {
