@@ -1,145 +1,116 @@
 package com.team7.handsOnJava;
-
-import com.team7.handsOnJava.exception.EshopException;
-import com.team7.handsOnJava.extras.ExamplesCreation;
-import com.team7.handsOnJava.extras.RandomSelect;
-import com.team7.handsOnJava.extras.Showcases;
-import com.team7.handsOnJava.model.*;
-import com.team7.handsOnJava.repository.DataSource;
-import com.team7.handsOnJava.repository.OrderRepository;
-import com.team7.handsOnJava.repository.SqlCommandRepository;
-import com.team7.handsOnJava.service.OrderServiceImpl;
-import com.team7.handsOnJava.service.ReportingService;
-import lombok.extern.slf4j.Slf4j;
-
-import java.math.BigDecimal;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.concurrent.ThreadLocalRandom;
 import static java.lang.System.exit;
-
-
-@Slf4j
 public class EshopApplication {
-    private final RandomSelect randomSelect = new RandomSelect();
-    private static final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
-    private static final ReportingService reportingService = new ReportingService();
-
-
-    //private static final CustomerServiceImpl customerService = new CustomerServiceImpl(new CustomerRepository());
-    //private static final ProductServiceImpl productService = new ProductServiceImpl(new ProductRepository());
-    ExamplesCreation examplesCreation = new ExamplesCreation();
-    Showcases showcases = new Showcases();
-
-    public static void main(String[] args) throws EshopException {
-        EshopApplication application = new EshopApplication();
+    private static final Logger logger = LoggerFactory.getLogger(EshopApplication.class);
+    private static final String DB_CONNECTION_URL_FILE_MODE = "jdbc:oracle:thin:@//localhost:1521/XEPDB1";
+    private static final String DB_USERNAME = "alexjava";
+    private static final String DB_PASSWORD = "Zisi123";
+    private final Properties sqlCommands = new Properties();
+    private HikariDataSource hikariDataSource;
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            logger.debug("No arguments passed.");
+        }
+        var demo = new EshopApplication();
+        demo.loadSqlCommands();
+        demo.loadDatabaseDriver();
+        // Initializing Connection Pooling mechanism
+        demo.initializeHikariConnectionPooling();
+        demo.dropTable();
+        demo.createTable();
+        //demo.insertData();
     }
-
-    public EshopApplication() {
-
-        List<Customer> customers = customerCreation();
-        List<Product> products = productCreation();
-        List<Order> orders = orderCreation(customers);
-        List<OrderItem> orderItems = orderItemCreation(orders,products);
-        initializeDatabase();
-        //orderShowcase(orders,orderItems,products.get(0));
-
-    }
-
-    public List<Product> productCreation() {
-        Product trampoline = new Product("TrampolineID","Trampoline",new BigDecimal(1000));
-        Product mattress = new Product("mattressID", "Mattress",new BigDecimal(500));
-        return List.of(trampoline,mattress);
-    }
-
-    public List<Customer> customerCreation() {
-        CustomerAddress AlexandraAddress = new CustomerAddress("1", "Plapouta", 31L, 3L);
-        CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261","3/2025","538");
-        WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927","GR8501442972218564578227146","Wired Transfer");
-        Cash AlexandraCash = new Cash();
-        B2bBusiness AlexandraB2bBusiness = new B2bBusiness("Business");
-
-        CustomerPaymentMethod AlexandraPaymentMethod = new CustomerPaymentMethod("1", AlexandraCard, AlexandraWireTransfer, AlexandraCash);
-        Customer Alexandra = new Customer("1", "Alex", "zisi@zisi.com", AlexandraAddress, AlexandraPaymentMethod, AlexandraB2bBusiness);
-        Customer Helena = new Customer("1", "Alex", "zisi@zisi.com", AlexandraAddress, AlexandraPaymentMethod, AlexandraB2bBusiness);
-
-        return List.of(Alexandra, Helena);
-    }
-    public List<Order> orderCreation(List<Customer> customers) {
-        List<Order> orders = new ArrayList<>();
-        log.info("------------------Create list of orders for every customer------------------");
-
-        int counter = 0;
-        for (int i=0;i<customers.size();i++) {
-            for (int j = 0; j<2; j++) {
-                orders.add(new Order(String.valueOf(customers.size() + counter), "Pending", customers.get(i), randomSelect.selectRandomTypeOfCustomer()));
-                counter++;
+    private void loadSqlCommands() {
+        try (InputStream inputStream = EshopApplication.class.getClassLoader().getResourceAsStream(
+                "sql.properties")) {
+            if (inputStream == null) {
+                logger.error("Sorry, unable to find sql.properties, exiting application.");
+                // Abnormal exit
+                exit(-1);
             }
+            //load a properties file from class path, inside static method
+            sqlCommands.load(inputStream);
+        } catch (IOException ex) {
+            logger.error("Sorry, unable to parse sql.properties, exiting application.", ex);
+            // Abnormal exit
+            exit(-1);
         }
-        return orders;
     }
-
-    public List<OrderItem> orderItemCreation(List<Order> orders,List<Product> products) {
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        log.info("------------------Create list of order items for every order------------------");
-
-        int counter = 0;
-        for (int i=0;i<orders.size();i++) {
-            Product randomProduct = randomSelect.selectRandomProduct(products);
-            orderItems.add(new OrderItem(String.valueOf(orders.size() + counter),
-                    orders.get(i), randomProduct,
-                    (long) (new Random().nextInt(10) + 1),
-                    orderService.FinalPriceOfOrderItem(orders.get(i),randomProduct)));
+    private void dropTable() {
+        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
+            int result = statement.executeUpdate(sqlCommands.getProperty("drop.table.orders"));
+            logger.info("Drop table command was successful with result {}.", result);
+        } catch (SQLException ex) {
+            logger.warn("Error while dropping table as it does not probably exist.");
         }
-        return orderItems;
     }
-    private static void CreateQueries(String command) {
-        try (Connection connection = DataSource.getConnection();
-             Statement statement = connection.createStatement()) {
-            log.info("Creating tables successful.");
-        } catch (SQLException e) {
-            log.error("Unable to create tables.", e);
+    private void createTable() {
+        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
+            logger.info("Created table command was successful with result {}.",
+                    statement.executeUpdate(sqlCommands.getProperty("create.table.orders")));
+        } catch (SQLException ex) {
+            logger.error("Error while creating table.", ex);
             exit(-1);
         }
     }
 
-    private static void DropQueries (String command) {
-        try (Connection connection = DataSource.getConnection();
-             Statement statement = connection.createStatement()) {
-            log.info("Dropping tables successful.");
-        } catch (SQLException e) {
-            log.error("Unable to drop tables.", e);
-            exit(-1);
+    private void initializeHikariConnectionPooling() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(DB_CONNECTION_URL_FILE_MODE);
+        config.setUsername(DB_USERNAME);
+        config.setPassword(DB_PASSWORD);
+        // This property controls the maximum number of milliseconds that a client (that's you) will wait for a
+        // connection from the pool.
+        // Defaults to 30000ms (30secs).
+        config.setConnectionTimeout(10000);
+        // This property controls the maximum amount of time that a connection is allowed to sit idle in the pool.
+        // This setting only applies when minimumIdle is defined to be less than maximumPoolSize.
+        // Defaults to 600000ms (10mins).
+        config.setIdleTimeout(60000);
+        // This property controls the maximum lifetime of a connection in the pool. An in-use connection will never be
+        // retired, only when it is closed will it then be removed.
+        // Defaults to 1800000ms (30mins).
+        config.setMaxLifetime(1800000);
+        // This property controls the minimum number of idle connections that HikariCP tries to maintain in the pool.
+        // Defaults to maximumPoolSize value.
+        config.setMinimumIdle(2);
+        // This property controls the maximum size that the pool is allowed to reach, including both idle and in-use
+        // connections.
+        // Defaults to 10.
+        config.setMaximumPoolSize(5);
+        // This property controls the default auto-commit behavior of connections returned from the pool.
+        // Defaults to true.
+        config.setAutoCommit(true);
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("useServerPrepStmts", "true");
+        hikariDataSource = new HikariDataSource(config);
+    }
+    private Connection getConnection() throws SQLException {
+        return hikariDataSource.getConnection();
+    }
+    private void loadDatabaseDriver() {
+        // Traditional way of loading database driver
+        try {
+            Class.forName("oracle.jdbc.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        logger.info("Oracle JDBC driver server has been successfully loaded.");
     }
-    public static void initializeDatabase() {
-        log.info("Initialize Database.");
-        dropTables();
-        createTables();
-    }
-    private static void dropTables() {
-        List<String> dropTables = List.of(SqlCommandRepository.get("drop.table.customer"),
-                SqlCommandRepository.get("drop.table.order"),
-                SqlCommandRepository.get("drop.table.product"),
-                SqlCommandRepository.get("drop.table.orderitem"));
-        for (int i=0;i<dropTables.size();i++){
-            DropQueries(dropTables.get(i));
-        }
-    }
-
-    private static void createTables() {
-        List<String> createTables = List.of(SqlCommandRepository.get("create.table.customer"),
-                SqlCommandRepository.get("create.table.order"),
-                SqlCommandRepository.get("create.table.product"),
-                SqlCommandRepository.get("create.table.orderitem"));
-        for (int i=0;i<createTables.size();i++){
-            CreateQueries(createTables.get(i));
-        }
-    }
-
 }
