@@ -57,9 +57,9 @@ public class EshopApplication {
     }
 
     public List<Customer> customerCreation() {
-        CustomerAddress AlexandraAddress = new CustomerAddress("1", "Dorieon", 10L, 2L);
-        CreditDebitCard AlexandraCard = new CreditDebitCard("1111","2222","33");
-        WireTransfer AlexandraWireTransfer = new WireTransfer("aaa","bb",null);
+        CustomerAddress AlexandraAddress = new CustomerAddress("1", "Plapouta", 31, 3);
+        CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261","3/2025","538");
+        WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927","GR8501442972218564578227146","Wired Transfer");
         Cash AlexandraCash = new Cash();
         B2bBusiness AlexandraB2bBusiness = new B2bBusiness("Business");
 
