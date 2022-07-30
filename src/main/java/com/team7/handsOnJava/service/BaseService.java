@@ -14,11 +14,9 @@ public interface BaseService<T extends BaseModel> {
 
     void delete(T entity) throws EshopException;
 
-    void deleteById(Long id) throws EshopException;
+    void deleteById(String id) throws EshopException;
 
     boolean exists(T entity) throws EshopException;
 
-    T get(Long id) throws EshopException;
-
-    List<T> findAll() throws EshopException;
+    List<T> findAll();
 }
