@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface OrderService extends BaseService<Order> {
     List<OrderItem> deleteOrderItem(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException;
-    List<Order> deleteOrder(String orderID, List<Order> orders) throws EshopException;
+    List<Order> deleteOrderBeforeCheckOut(String orderID, List<Order> orders) throws EshopException;
     List<OrderItem> deleteOrderItembyID(List<OrderItem> orderItems,String orderItemID) throws EshopException;
     boolean isOrderItemOnList(List<OrderItem> orderItems,OrderItem orderItem);
     OrderItem createOrderItem(OrderItem orderItem) throws EshopException;

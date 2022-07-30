@@ -9,12 +9,9 @@ import com.team7.handsOnJava.repository.ProductRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService extends BaseService<Product> {
-
-     List<Product> createAll(String ProductName, BigDecimal ProductPrice) throws EshopException;
-
-
-
-
+     Optional<Product> findByID(String s) throws EshopException;
+     boolean update(Product product) throws EshopException;
 }

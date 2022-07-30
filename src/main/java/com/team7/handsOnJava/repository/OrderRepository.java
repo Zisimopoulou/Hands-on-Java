@@ -14,15 +14,15 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Slf4j
-public class OrderRepository implements CRUDRepository<Order, String>{
+public class OrderRepository implements CRUDRepository<Order>{
 
     @Override
-    public List<Order> findAll() throws EshopException {
+    public List<Order> findAll() {
         return null;
     }
 
     @Override
-    public Optional<Order> findByID(String s) throws EshopException {
+    public Optional<Order> findByID(String s) {
         return Optional.empty();
     }
 
@@ -40,6 +40,11 @@ public class OrderRepository implements CRUDRepository<Order, String>{
         } catch (SQLException e) {
             throw new EshopException("Unable to delete order.", e);
         }
+    }
+
+    @Override
+    public void deleteByID(String id) throws EshopException {
+
     }
 
     @Override
@@ -90,6 +95,11 @@ public class OrderRepository implements CRUDRepository<Order, String>{
     @Override
     public List<Order> createAll(Order... orders) throws EshopException {
         return null;
+    }
+
+    @Override
+    public boolean exists(Order entity) {
+        return false;
     }
 
 }

@@ -8,31 +8,53 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderService {
 
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository) {this.orderRepository = orderRepository;}
 
     @Override
-    public List<Order> findAll() throws EshopException {
-        return null;
+    public CRUDRepository<Order> getRepository() {return orderRepository;}
+
+    @Override
+    public List<Order> findAll() {
+        log.debug("Finding all orders.");
+        return super.findAll();
+    }
+
+    @Override
+    public Order create(Order order) throws EshopException {
+        if (order.getStatus() == "APPROVED") {
+            log.info("Approving order.");
+            return super.create(order);
+        }
+        throw new EshopException("Order rejected.");
+    }
+
+    @Override
+    public List<Order> createAll(Order... orders) throws EshopException {
+        return super.createAll();
     }
 
     @Override
     public void delete(Order order) throws EshopException {
         log.info("Deleting order.");
         try {
-            orderRepository.delete(order);
+            super.delete(order);
         } catch (EshopException e) {
             throw new EshopException("Unable to delete order.", e);
         }
     }
+
     @Override
-    public List<Order> deleteOrder(String orderID, List<Order> orders) throws EshopException {
+    public void deleteById(String id) throws EshopException {
+        super.deleteById(id);
+    }
+    @Override
+    public List<Order> deleteOrderBeforeCheckOut(String orderID, List<Order> orders) throws EshopException {
         log.info("Deleting order.");
         for (int i=0;i<orders.size();i++) {
             if (orderID == orders.get(i).getId()) {
@@ -44,20 +66,12 @@ public class OrderServiceImpl implements OrderService {
         }
         throw new EshopException("Unable to find order item in the provided order");
     }
-    @Override
-    public void deleteById(Long id) throws EshopException {
-
-    }
 
     @Override
     public boolean exists(Order entity) throws EshopException {
         return false;
     }
 
-    @Override
-    public Order get(Long id) throws EshopException {
-        return null;
-    }
     @Override
     public List<OrderItem> deleteOrderItem(List<OrderItem> orderItems,OrderItem orderItem) throws EshopException {
         checkIfShipped(orderItem.getOrder());
@@ -86,14 +100,7 @@ public class OrderServiceImpl implements OrderService {
         }
         throw new EshopException("Unable to find order item in the provided order");
     }
-    @Override
-    public Order create(Order order) throws EshopException {
-        if (order.getStatus() == "APPROVED") {
-            log.info("Approving order.");
-            return orderRepository.create(order);
-        }
-        throw new EshopException("Order rejected.");
-    }
+
 
     @Override
     public OrderItem createOrderItem(OrderItem orderItem) throws EshopException {
@@ -103,10 +110,7 @@ public class OrderServiceImpl implements OrderService {
         }
         throw new EshopException("Order rejected.");
     }
-    @Override
-    public List<Order> createAll(Order... orders) throws EshopException {
-        return null;
-    }
+
 
     @Override
     public List<Order> createAll(List<Order> entities) throws EshopException {

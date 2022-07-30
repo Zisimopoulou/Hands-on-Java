@@ -12,13 +12,13 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Slf4j
-public class CustomerRepository implements CRUDRepository<Customer, String>{
+public class CustomerRepository implements CRUDRepository<Customer>{
 
-    public List<Customer> findAll() throws EshopException {
+    public List<Customer> findAll() {
         return null;
     }
 
-    public Optional<Customer> findByID(String s) throws EshopException {
+    public Optional<Customer> findByID(String s) {
         return Optional.empty();
     }
 
@@ -34,6 +34,11 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
         }
     }
 
+    @Override
+    public void deleteByID(String id) throws EshopException {
+
+    }
+
     public Customer create(Customer customer) throws EshopException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -46,7 +51,7 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
             preparedStatement.setObject(5, customer.getTypeOfCustomer());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            generatedKeys.next(); // we only suppose that there is a single generated key
+            generatedKeys.next();
             customer.setId(String.valueOf(generatedKeys.getLong(1)));
             return customer;
         } catch (SQLException e) {
@@ -56,6 +61,11 @@ public class CustomerRepository implements CRUDRepository<Customer, String>{
 
     public List<Customer> createAll(Customer... customers) throws EshopException {
         return null;
+    }
+
+    @Override
+    public boolean exists(Customer entity) {
+        return false;
     }
 
     public static boolean validEmail(String emailAddress, String regexPattern) {

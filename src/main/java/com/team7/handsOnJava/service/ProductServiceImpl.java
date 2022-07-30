@@ -1,6 +1,7 @@
 package com.team7.handsOnJava.service;
 
 import com.team7.handsOnJava.exception.EshopException;
+import com.team7.handsOnJava.model.Customer;
 import com.team7.handsOnJava.model.Product;
 import com.team7.handsOnJava.repository.CRUDRepository;
 
@@ -8,21 +9,46 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.team7.handsOnJava.repository.CustomerRepository;
 import com.team7.handsOnJava.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductServiceImpl implements ProductService {
-    private ProductRepository productRepository;
+public class ProductServiceImpl extends BaseServiceImpl<Product> implements ProductService {
+    private final ProductRepository productRepository;
+    public ProductServiceImpl(ProductRepository productRepository) {this.productRepository = productRepository;}
+    @Override
+    public CRUDRepository<Product> getRepository() {return productRepository;}
 
     @Override
-    public List<Product> findAll() throws EshopException {
-        log.debug("Finding all Product.");
-        List<Product> productFromDatabase = productRepository.findAll();
-        return productFromDatabase;
+    public List<Product> findAll() {
+        log.debug("Finding all products.");
+        return super.findAll();
+    }
+    @Override
+    public Product create(Product product) throws EshopException {
+        log.debug("Creating product {}.", product);
+        super.create(product);
+        throw new EshopException("Product rejected.");
     }
 
-    public Optional<Product> findByID(String s) throws EshopException {
+    @Override
+    public List<Product> createAll(List<Product> products) throws EshopException {
+        return super.createAll();
+    }
+    @Override
+    public void delete(Product product) throws EshopException {
+        log.debug("Deleting product {}.", product);
+        super.delete(product);
+    }
+
+    @Override
+    public void deleteById(String id) throws EshopException {
+        super.deleteById(id);
+    }
+
+    @Override
+    public Optional<Product> findByID(String s) {
         log.debug("Finding product matching id {}.", findByID("ID"));
         Optional<Product> productFromDatabaseOptional = productRepository.findByID(s);
         if (productFromDatabaseOptional.isPresent()) {
@@ -33,6 +59,7 @@ public class ProductServiceImpl implements ProductService {
         return productFromDatabaseOptional;
     }
 
+    @Override
     public boolean update(Product product) throws EshopException {
         boolean isUpdated = false;
         if (product.getProductPrice() != null) {
@@ -47,47 +74,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(Product product) throws EshopException {
-        log.debug("Deleting product {}.", product);
-        productRepository.delete(product);
-    }
-
-    @Override
-    public void deleteById(Long id) throws EshopException {
-
-    }
-
-    @Override
     public boolean exists(Product entity) throws EshopException {
-        return false;
+        return super.exists(entity);
     }
-
-    @Override
-    public Product get(Long id) throws EshopException {
-        return null;
-    }
-
-    @Override
-    public Product create(Product product) throws EshopException {
-        log.debug("Creating product {}.", product);
-        productRepository.create(product);
-        throw new EshopException("Product rejected.");
-    }
-
 
     @Override
     public List<Product> createAll(Product... products) throws EshopException {
-        productRepository.createAll(products);
-        return null;
-    }
-
-    @Override
-    public List<Product> createAll(List<Product> entities) throws EshopException {
-        return null;
-    }
-
-    @Override
-    public List<Product> createAll(String ProductName, BigDecimal ProductPrice) throws EshopException {
-        return null;
+        return super.createAll(products);
     }
 }

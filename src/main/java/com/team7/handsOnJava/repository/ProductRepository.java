@@ -29,9 +29,9 @@ import static com.team7.handsOnJava.model.Product.*;
 
 @Slf4j
 
-public class ProductRepository implements CRUDRepository<Product, String> {
+public class ProductRepository implements CRUDRepository<Product> {
     @Override
-    public List<Product> findAll() throws EshopException {
+    public List<Product> findAll() {
 
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -55,7 +55,7 @@ public class ProductRepository implements CRUDRepository<Product, String> {
 
 
     @Override
-    public Optional<Product> findByID(String aString) throws EshopException {
+    public Optional<Product> findByID(String aString) {
 
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -90,6 +90,11 @@ public class ProductRepository implements CRUDRepository<Product, String> {
         }
     }
 
+    @Override
+    public void deleteByID(String id) throws EshopException {
+
+    }
+
 
     @Override
     public Product create(Product product) throws EshopException {
@@ -111,7 +116,7 @@ public class ProductRepository implements CRUDRepository<Product, String> {
                 preparedStatement.executeUpdate();
 
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                generatedKeys.next(); // we only suppose that there is a single generated key
+                generatedKeys.next();
                 product.setProductId(generatedKeys.getString(1));
                 prod.add(product);
             }
@@ -122,7 +127,12 @@ public class ProductRepository implements CRUDRepository<Product, String> {
         }
     }
 
-        public boolean update(Product product) throws EshopException {
+    @Override
+    public boolean exists(Product entity) {
+        return false;
+    }
+
+    public boolean update(Product product) throws EshopException {
             try (Connection connection = DataSource.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(
                          SqlCommandRepository.get("delete.table.product.000"))) {
