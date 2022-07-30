@@ -15,4 +15,6 @@ public interface ProductService extends BaseService<Product> {
      List<Product> createAll(String ProductName, BigDecimal ProductPrice) throws EshopException;
 
 
+
+
 }

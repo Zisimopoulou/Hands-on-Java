@@ -4,6 +4,7 @@ import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Product;
 import com.team7.handsOnJava.repository.CRUDRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ import com.team7.handsOnJava.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductServiceImpl implements CRUDRepository<Product, String> {
+public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Override
@@ -21,7 +22,6 @@ public class ProductServiceImpl implements CRUDRepository<Product, String> {
         return productFromDatabase;
     }
 
-    @Override
     public Optional<Product> findByID(String s) throws EshopException {
         log.debug("Finding product matching id {}.", findByID("ID"));
         Optional<Product> productFromDatabaseOptional = productRepository.findByID(s);
@@ -37,9 +37,7 @@ public class ProductServiceImpl implements CRUDRepository<Product, String> {
         boolean isUpdated = false;
         if (product.getProductPrice() != null) {
             isUpdated = productRepository.update(product);
-            // if it exists, then also go and update its units
             if (isUpdated) {
-                // find existing database units and compare with new ones that need to be saved
                 String id = product.getProductId();
                 Optional<Product> previouslyPersistedUnits = findByID(id);
 
@@ -47,25 +45,49 @@ public class ProductServiceImpl implements CRUDRepository<Product, String> {
         }
         return false;
     }
+
     @Override
-    public void delete (Product product) throws EshopException {
+    public void delete(Product product) throws EshopException {
         log.debug("Deleting product {}.", product);
         productRepository.delete(product);
     }
 
-            @Override
-            public Product create (Product product) throws EshopException {
-                log.debug("Creating product {}.", product);
-                productRepository.create(product);
-                throw new EshopException("Order rejected."); //kapos kati na girizei gia na ginei to status rejected
-            }
+    @Override
+    public void deleteById(Long id) throws EshopException {
 
+    }
+
+    @Override
+    public boolean exists(Product entity) throws EshopException {
+        return false;
+    }
+
+    @Override
+    public Product get(Long id) throws EshopException {
+        return null;
+    }
+
+    @Override
+    public Product create(Product product) throws EshopException {
+        log.debug("Creating product {}.", product);
+        productRepository.create(product);
+        throw new EshopException("Product rejected.");
+    }
 
 
     @Override
-            public List<Product> createAll (Product...products) throws EshopException {
-                productRepository.createAll(products);
-                return null;
-            }
+    public List<Product> createAll(Product... products) throws EshopException {
+        productRepository.createAll(products);
+        return null;
+    }
 
-        }
+    @Override
+    public List<Product> createAll(List<Product> entities) throws EshopException {
+        return null;
+    }
+
+    @Override
+    public List<Product> createAll(String ProductName, BigDecimal ProductPrice) throws EshopException {
+        return null;
+    }
+}
