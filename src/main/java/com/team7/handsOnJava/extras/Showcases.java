@@ -30,7 +30,6 @@ public class Showcases{
             customers= customerService.deleteCustomer(customerShowcase.getId(), customers);
 
             log.info("------------------Create Customer in Database------------------");
-            customers.get(0).setStatus("APPROVED");
             customerService.create(customer);
         } catch (EshopException e) {
             log.error("Unable to complete customer Showcase.", e);
@@ -65,7 +64,7 @@ public class Showcases{
             orderItems = orderService.deleteOrderItembyID(orderItems, orderItemShowcase.getId());
 
             log.info("------------------Delete order with ID = {}------------------", orderShowcase.getId());
-            orders = orderService.deleteOrder(orderShowcase.getId(), orders);
+            orders = orderService.deleteOrderBeforeCheckOut(orderShowcase.getId(), orders);
 
             log.info("------------------Create Order and Order Item in Database------------------");
             orders.get(0).setStatus("APPROVED");

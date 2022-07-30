@@ -7,7 +7,7 @@ import java.lang.String;
 @Getter
 @Setter
 public class Customer extends BaseModel {
-    private String customerName, customerEmail, status;
+    private String customerName, customerEmail;
     private CustomerPaymentMethod customerPaymentMethod;
     private CustomerAddress customerAddress;
     private TypeOfCustomer typeOfCustomer;
@@ -22,6 +22,5 @@ public class Customer extends BaseModel {
         this.customerPaymentMethod= customerPaymentMethod;
         this.typeOfCustomer= typeOfCustomer;
     }
-    public void setStatus(String status) {this.status = status;}
 
 }
