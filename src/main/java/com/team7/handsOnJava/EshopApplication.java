@@ -1,4 +1,6 @@
 package com.team7.handsOnJava;
+
+import com.team7.handsOnJava.enums.TablesDropCreate;
 import com.team7.handsOnJava.extras.ExamplesCreation;
 import com.team7.handsOnJava.extras.Showcases;
 import com.zaxxer.hikari.HikariConfig;
@@ -6,6 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -14,12 +17,16 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+
 import static java.lang.System.exit;
+import static java.lang.System.setOut;
+
 import com.team7.handsOnJava.extras.RandomSelect;
 import com.team7.handsOnJava.model.*;
 import com.team7.handsOnJava.repository.OrderRepository;
 import com.team7.handsOnJava.service.OrderServiceImpl;
 import com.team7.handsOnJava.service.ReportingService;
+
 @Slf4j
 public class EshopApplication {
     ExamplesCreation examplesCreation = new ExamplesCreation();
@@ -33,19 +40,16 @@ public class EshopApplication {
     private static final String DB_PASSWORD = "Zisi123";
     private final Properties sqlCommands = new Properties();
     private HikariDataSource hikariDataSource;
+
     public static void main(String[] args) {
         EshopApplication application = new EshopApplication();
 
         if (args.length == 0) {
             logger.debug("No arguments passed.");
         }
-        var demo = new EshopApplication();
-        demo.loadSqlCommands();
-        demo.loadDatabaseDriver();
-        // Initializing Connection Pooling mechanism
-        demo.initializeHikariConnectionPooling();
-        demo.dropTable();
-        demo.createTable();
+
+        initializeDatabase();
+
         //demo.insertData();
     }
 
@@ -54,21 +58,21 @@ public class EshopApplication {
         List<Customer> customers = customerCreation();
         List<Product> products = productCreation();
         List<Order> orders = orderCreation(customers);
-        List<OrderItem> orderItems = orderItemCreation(orders,products);
+        List<OrderItem> orderItems = orderItemCreation(orders, products);
         //orderShowcase(orders,orderItems,products.get(0));
 
     }
 
     public List<Product> productCreation() {
-        Product trampoline = new Product("TrampolineID","Trampoline",new BigDecimal(1000));
-        Product mattress = new Product("mattressID", "Mattress",new BigDecimal(500));
-        return List.of(trampoline,mattress);
+        Product trampoline = new Product("TrampolineID", "Trampoline", new BigDecimal(1000));
+        Product mattress = new Product("mattressID", "Mattress", new BigDecimal(500));
+        return List.of(trampoline, mattress);
     }
 
     public List<Customer> customerCreation() {
         CustomerAddress AlexandraAddress = new CustomerAddress("1", "Plapouta", 31L, 3L);
-        CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261","3/2025","538");
-        WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927","GR8501442972218564578227146","Wired Transfer");
+        CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261", "3/2025", "538");
+        WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927", "GR8501442972218564578227146", "Wired Transfer");
         Cash AlexandraCash = new Cash();
         B2bBusiness AlexandraB2bBusiness = new B2bBusiness("Business");
 
@@ -78,13 +82,14 @@ public class EshopApplication {
 
         return List.of(Alexandra, Helena);
     }
+
     public List<Order> orderCreation(List<Customer> customers) {
         List<Order> orders = new ArrayList<>();
         log.info("------------------Create list of orders for every customer------------------");
 
         int counter = 0;
-        for (int i=0;i<customers.size();i++) {
-            for (int j = 0; j<2; j++) {
+        for (int i = 0; i < customers.size(); i++) {
+            for (int j = 0; j < 2; j++) {
                 orders.add(new Order(String.valueOf(customers.size() + counter), "Pending", customers.get(i), randomSelect.selectRandomTypeOfCustomer()));
                 counter++;
             }
@@ -92,21 +97,22 @@ public class EshopApplication {
         return orders;
     }
 
-    public List<OrderItem> orderItemCreation(List<Order> orders,List<Product> products) {
+    public List<OrderItem> orderItemCreation(List<Order> orders, List<Product> products) {
         List<OrderItem> orderItems = new ArrayList<>();
 
         log.info("------------------Create list of order items for every order------------------");
 
         int counter = 0;
-        for (int i=0;i<orders.size();i++) {
+        for (int i = 0; i < orders.size(); i++) {
             Product randomProduct = randomSelect.selectRandomProduct(products);
             orderItems.add(new OrderItem(String.valueOf(orders.size() + counter),
                     orders.get(i), randomProduct,
                     (long) (new Random().nextInt(10) + 1),
-                    orderService.FinalPriceOfOrderItem(orders.get(i),randomProduct)));
+                    orderService.FinalPriceOfOrderItem(orders.get(i), randomProduct)));
         }
         return orderItems;
     }
+
     private void loadSqlCommands() {
         try (InputStream inputStream = EshopApplication.class.getClassLoader().getResourceAsStream(
                 "sql.properties")) {
@@ -123,23 +129,54 @@ public class EshopApplication {
             exit(-1);
         }
     }
-    private void dropTable() {
+
+    public static void initializeDatabase() {
+        log.info("--Initializing database tables (if they do not exist)");
+        var demo = new EshopApplication();
+        demo.loadSqlCommands();
+        demo.loadDatabaseDriver();
+        demo.initializeHikariConnectionPooling();
+        demo.allTablesDropCreate();
+    }
+
+    private void dropTable(String table) {
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-            int result = statement.executeUpdate(sqlCommands.getProperty("drop.table.customer"));
+            int result = statement.executeUpdate(sqlCommands.getProperty(table));
             logger.info("Drop table command was successful with result {}.", result);
         } catch (SQLException ex) {
             logger.warn("Error while dropping table as it does not probably exist.");
         }
     }
-    private void createTable() {
+
+    private void dropTables(String table) {
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
-            logger.info("Created table command was successful with result {}.",
-                    statement.executeUpdate(sqlCommands.getProperty("create.table.customer")));
+            int result = statement.executeUpdate(sqlCommands.getProperty(table));
+            log.info("Successful drop of tables.");
         } catch (SQLException ex) {
-            logger.error("Error while creating table.", ex);
+            log.info("Error while dropping tables.");
+        }
+    }
+
+    private void allTablesDropCreate() {
+        TablesDropCreate.stream()
+                .filter(d -> d.getDropOrCreate().equals("drop"))
+                .forEach(d -> dropTables(d.getTable()));
+        TablesDropCreate.stream()
+                .filter(d -> d.getDropOrCreate().equals("create"))
+                .forEach(d -> createTables(d.getTable()));
+    }
+
+
+    private void createTables(String table) {
+        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate(sqlCommands.getProperty(table));
+            log.info("Successful creation of tables.");
+        } catch (SQLException ex) {
+            log.error("Error while creating tables.", ex);
             exit(-1);
         }
     }
+
 
     private void initializeHikariConnectionPooling() {
         HikariConfig config = new HikariConfig();
@@ -174,9 +211,11 @@ public class EshopApplication {
         config.addDataSourceProperty("useServerPrepStmts", "true");
         hikariDataSource = new HikariDataSource(config);
     }
+
     private Connection getConnection() throws SQLException {
         return hikariDataSource.getConnection();
     }
+
     private void loadDatabaseDriver() {
         // Traditional way of loading database driver
         try {
