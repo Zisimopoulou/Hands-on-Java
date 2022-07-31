@@ -11,54 +11,57 @@ import java.util.List;
 import java.util.Random;
 @Slf4j
 public class ExamplesCreation {
-    private final RandomSelect randomSelect = new RandomSelect();
-    private final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
+    private static final RandomSelect randomSelect = new RandomSelect();
+    private static final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
 
-    public List<Product> productCreation() {
-        Product trampoline = new Product("TrampolineID","Trampoline",new BigDecimal(1000));
-        Product mattress = new Product("mattressID", "Mattress",new BigDecimal(500));
-        return List.of(trampoline,mattress);
+    public static List<Product> productCreation() {
+        Product trampoline = new Product("TrampolineID", "Trampoline", new BigDecimal(1000));
+        Product mattress = new Product("mattressID", "Mattress", new BigDecimal(500));
+        return List.of(trampoline, mattress);
     }
 
-    public List<Customer> customerCreation() {
-        CustomerAddress AlexandraAddress = new CustomerAddress("1", "Dorieon", 10L, 2L);
-        CreditDebitCard AlexandraCard = new CreditDebitCard("1111","2222","33");
-        WireTransfer AlexandraWireTransfer = new WireTransfer("aaa","bb",null);
+    public static List<Customer> customerCreation() {
+        List<Customer> customers = new ArrayList<>();
+        CustomerAddress AlexandraAddress = new CustomerAddress("1", "Plapouta", 31L, 3L);
+        CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261", "3/2025", "538");
+        WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927", "GR8501442972218564578227146", "Wired Transfer");
         Cash AlexandraCash = new Cash();
         B2bBusiness AlexandraB2bBusiness = new B2bBusiness("Business");
 
         CustomerPaymentMethod AlexandraPaymentMethod = new CustomerPaymentMethod("1", AlexandraCard, AlexandraWireTransfer, AlexandraCash);
         Customer Alexandra = new Customer("1", "Alex", "zisi@zisi.com", AlexandraAddress, AlexandraPaymentMethod, AlexandraB2bBusiness);
-        Customer Helena = new Customer("1", "Alex", "zisi@zisi.com", AlexandraAddress, AlexandraPaymentMethod, AlexandraB2bBusiness);
-
-        return List.of(Alexandra, Helena);
+        Customer Helena = new Customer("2", "Alex", "zisi@zisi.com", AlexandraAddress, AlexandraPaymentMethod, AlexandraB2bBusiness);
+        customers.add(Alexandra);
+        customers.add(Helena);
+        return customers;
     }
-    public List<Order> orderCreation(List<Customer> customers) {
+
+    public static List<Order> orderCreation(List<Customer> customers) {
         List<Order> orders = new ArrayList<>();
         log.info("------------------Create list of orders for every customer------------------");
 
         int counter = 0;
-        for (int i=0;i<customers.size();i++) {
-            for (int j = 0; j<2; j++) {
-                orders.add(new Order(String.valueOf(customers.size() + counter), "Pending", customers.get(i), randomSelect.selectRandomTypeOfCustomer()));
+        for (int i = 0; i < customers.size(); i++) {
+            for (int j = 0; j < 2; j++) {
+                orders.add(new Order(String.valueOf(customers.size() + counter), "Pending", customers.get(i), randomSelect.selectRandomPaymentMethod()));
                 counter++;
             }
         }
         return orders;
     }
 
-    public List<OrderItem> orderItemCreation(List<Order> orders,List<Product> products) {
+    public static List<OrderItem> orderItemCreation(List<Order> orders, List<Product> products) {
         List<OrderItem> orderItems = new ArrayList<>();
 
         log.info("------------------Create list of order items for every order------------------");
 
         int counter = 0;
-        for (int i=0;i<orders.size();i++) {
+        for (int i = 0; i < orders.size(); i++) {
             Product randomProduct = randomSelect.selectRandomProduct(products);
             orderItems.add(new OrderItem(String.valueOf(orders.size() + counter),
                     orders.get(i), randomProduct,
                     (long) (new Random().nextInt(10) + 1),
-                    orderService.FinalPriceOfOrderItem(orders.get(i),randomProduct)));
+                    orderService.FinalPriceOfOrderItem(orders.get(i), randomProduct)));
         }
         return orderItems;
     }
