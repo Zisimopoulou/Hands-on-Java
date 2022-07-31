@@ -44,6 +44,7 @@ public class EshopApplication {
         List<OrderItem> orderItems = ExamplesCreation.orderItemCreation(orders, products);
 
         Showcases.customerShowcase(customers.get(0), customers);
+        showcases.productShowcase(products);
         showcases.orderShowcase(orders,orderItems,products.get(0));
 
     }

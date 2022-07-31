@@ -142,7 +142,7 @@ public class ProductRepository implements CRUDRepository<Product> {
             log.debug("Updating product with ID={}", product.getId());
 
             preparedStatement.setString(1, product.getProductName());
-            preparedStatement.setBigDecimal(2, product.getProductPrice());
+            preparedStatement.setString(2,String.valueOf(product.getProductPrice()));
             preparedStatement.setLong(3, Long.parseLong(product.getId()));
 
         } catch (SQLException e) {

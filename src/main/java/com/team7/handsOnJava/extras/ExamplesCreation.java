@@ -17,7 +17,10 @@ public class ExamplesCreation {
     public static List<Product> productCreation() {
         Product trampoline = new Product("TrampolineID", "Trampoline", new BigDecimal(1000));
         Product mattress = new Product("mattressID", "Mattress", new BigDecimal(500));
-        return List.of(trampoline, mattress);
+        Product foamRoller = new Product("foamRollerID", "Foam Roller", new BigDecimal(20));
+        Product gloves = new Product("glovesID", "Gloves", new BigDecimal(5));
+
+        return List.of(trampoline, mattress, foamRoller, gloves);
     }
 
     public static List<Customer> customerCreation() {

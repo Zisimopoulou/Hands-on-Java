@@ -86,8 +86,8 @@ public class Showcases{
             orders = orderService.deleteOrderBeforeCheckOut(orderShowcase.getId(), orders);
 
             log.info("------------------Create Order and Order Item in Database------------------");
-            orders.get(0).setStatus("APPROVED");
-            //shipOrder(orders.get(0), orderItems);
+            orders.get(1).setStatus("APPROVED");
+            shipOrder(orders.get(1), orderItems);
 
         } catch (EshopException e) {
             log.error("Unable to complete order Showcase.", e);
