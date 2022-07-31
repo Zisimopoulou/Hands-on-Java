@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Random;
 @Slf4j
 public class RandomSelect {
-    public String selectRandomTypeOfCustomer(){
-        log.info("Randomly select type of customer");
+    public String selectRandomPaymentMethod(){
+        log.info("Randomly select payment method");
         String [] arr = {"wireTransfer","creditCard","cash"};
         Random random = new Random();
         int select = random.nextInt(arr.length);

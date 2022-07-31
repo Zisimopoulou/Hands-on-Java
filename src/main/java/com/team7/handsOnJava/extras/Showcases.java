@@ -21,21 +21,21 @@ public class Showcases{
     private static final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
     private static final ReportingService reportingService = new ReportingService();
 
-    public void customerShowcase(Customer customer, List<Customer> customers) {
+    public static void customerShowcase(Customer customer, List<Customer> customers) {
         try {
             log.info("------------------Customer Showcase------------------");
             Customer customerShowcase = customers.get(0);
 
+            log.info("------------------Create Customer in Database------------------");
+            customerService.create(customer);
+
             log.info("------------------Delete customer with ID = {}------------------", customerShowcase.getId());
             customers= customerService.deleteCustomer(customerShowcase.getId(), customers);
 
-            log.info("------------------Create Customer in Database------------------");
-            customerService.create(customer);
         } catch (EshopException e) {
             log.error("Unable to complete customer Showcase.", e);
         }
     }
-
 
     public void orderShowcase(List<Order> orders, List<OrderItem> orderItems, Product product) {
         try {
@@ -68,7 +68,7 @@ public class Showcases{
 
             log.info("------------------Create Order and Order Item in Database------------------");
             orders.get(0).setStatus("APPROVED");
-            shipOrder(orders.get(0), orderItems);
+            //shipOrder(orders.get(0), orderItems);
 
         } catch (EshopException e) {
             log.error("Unable to complete order Showcase.", e);
@@ -83,7 +83,6 @@ public class Showcases{
             }
         }
     }
-
     public void reportingShowcase(Product product, Customer customer) throws EshopException {
         log.info("------------------Reporting Showcases------------------");
 

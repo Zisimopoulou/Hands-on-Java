@@ -1,6 +1,7 @@
 package com.team7.handsOnJava;
 
 import com.team7.handsOnJava.enums.TablesDropCreate;
+import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.extras.ExamplesCreation;
 import com.team7.handsOnJava.extras.Showcases;
 import com.team7.handsOnJava.repository.CustomerRepository;
@@ -42,8 +43,9 @@ public class EshopApplication {
         List<Order> orders = ExamplesCreation.orderCreation(customers);
         List<OrderItem> orderItems = ExamplesCreation.orderItemCreation(orders, products);
 
-        //orderShowcase(orders,orderItems,products.get(0));
-        //customerShowcase(customers.get(0), customers);
+        Showcases.customerShowcase(customers.get(0), customers);
+        showcases.orderShowcase(orders,orderItems,products.get(0));
+
     }
 
     private static void loadSqlCommands() {
@@ -105,64 +107,4 @@ public class EshopApplication {
         }
         log.info("Oracle JDBC driver server has been successfully loaded.");
     }
-
-//    public static void customerShowcase(Customer customer, List<Customer> customers) {
-//        try {
-//            log.info("------------------Customer Showcase------------------");
-//            Customer customerShowcase = customers.get(0);
-//
-//            log.info("------------------Create Customer in Database------------------");
-//            customerService.create(customer);
-//        } catch (EshopException e) {
-//            log.error("Unable to complete customer Showcase.", e);
-//        }
-//    }
-
-//    public void orderShowcase(List<Order> orders, List<OrderItem> orderItems, Product product) {
-//        try {
-//            log.info("------------------Order and OrderItem Showcase------------------");
-//            Order orderShowcase = orders.get(0);
-//            OrderItem orderItemShowcase = orderItems.get(1);
-//
-//            log.info("------------------Change quantity of order item------------------");
-//            Long amount = 3L;
-//            log.info("Quantity before adding amount = {} is {}", amount, orderItemShowcase.getQuantity());
-//            orderItemShowcase.setQuantity(orderService.IncreaseOrDecreaseItemQuantity(orderItemShowcase, 3L));
-//            log.info("Quantity after adding amount = {} is {}", amount, orderItemShowcase.getQuantity());
-//
-//            log.info("------------------Add order item in order = {}------------------", orderShowcase.getId());
-//            OrderItem newOrderItem = new OrderItem(String.valueOf(orderItems.size() + 1), orderShowcase, product, 1L, orderService.FinalPriceOfOrderItem(orderShowcase, product));
-//            if (!orderService.isOrderItemOnList(orderItems, newOrderItem)) {
-//                orderItems.add(newOrderItem);
-//                log.info("------------------Item with ID = {}, was added to the list------------------", newOrderItem.getId());
-//
-//            } else {
-//                log.info("Item already on the list.");
-//            }
-//
-//
-//            log.info("------------------Delete order item with ID = {}------------------", orderItemShowcase.getId());
-//            orderItems = orderService.deleteOrderItembyID(orderItems, orderItemShowcase.getId());
-//
-//            log.info("------------------Delete order with ID = {}------------------", orderShowcase.getId());
-//            orders = orderService.deleteOrderBeforeCheckOut(orderShowcase.getId(), orders);
-//
-//            log.info("------------------Create Order and Order Item in Database------------------");
-//            orders.get(0).setStatus("APPROVED");
-//            shipOrder(orders.get(0), orderItems);
-//
-//        } catch (EshopException e) {
-//            log.error("Unable to complete order Showcase.", e);
-//        }
-//    }
-//
-//    private static void shipOrder(Order order, List<OrderItem> orderItems) throws EshopException {
-//        orderService.create(order);
-//        for (OrderItem o : orderItems) {
-//            if (o.getOrder().getId() == order.getId()) {
-//                orderService.createOrderItem(o);
-//            }
-//        }
-//    }
-
 }
