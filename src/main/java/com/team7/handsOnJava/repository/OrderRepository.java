@@ -50,7 +50,7 @@ public class OrderRepository implements CRUDRepository<Order>{
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommands.get("insert.table.orders.000"), new String[]{"id"})) {
 
-            log.debug("Creating order {}", order);
+            log.debug("Creating order.");
 
             preparedStatement.setString(1, order.getStatus());
             preparedStatement.setString(2, order.getChosenPaymentMethod());
