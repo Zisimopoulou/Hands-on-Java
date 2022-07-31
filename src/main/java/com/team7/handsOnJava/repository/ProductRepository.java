@@ -33,7 +33,7 @@ public class ProductRepository implements CRUDRepository<Product> {
     @Override
     public List<Product> findAll() {
 
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -57,7 +57,7 @@ public class ProductRepository implements CRUDRepository<Product> {
     @Override
     public Optional<Product> findByID(String aString) {
 
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
             preparedStatement.setString(1, aString);
@@ -76,7 +76,7 @@ public class ProductRepository implements CRUDRepository<Product> {
 
     @Override
     public void delete(Product product) throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("delete.table.product.000"))) {
 
@@ -95,7 +95,6 @@ public class ProductRepository implements CRUDRepository<Product> {
 
     }
 
-
     @Override
     public Product create(Product product) throws EshopException {
         return null;
@@ -104,7 +103,7 @@ public class ProductRepository implements CRUDRepository<Product> {
     @Override
     public List<Product> createAll(Product... products) throws EshopException {
         ArrayList<Product> prod = new ArrayList<>();
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("insert.table.product.000"), new String[]{"id"})) {
 
@@ -133,7 +132,7 @@ public class ProductRepository implements CRUDRepository<Product> {
     }
 
     public boolean update(Product product) throws EshopException {
-            try (Connection connection = DataSource.getConnection();
+            try (Connection connection = HikariConnection.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(
                          SqlCommandRepository.get("delete.table.product.000"))) {
 
@@ -148,9 +147,8 @@ public class ProductRepository implements CRUDRepository<Product> {
             }
         }
 
-
     public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
-        try(Connection connection = DataSource.getConnection();
+        try(Connection connection = HikariConnection.getConnection();
             PreparedStatement preparedstatement = connection.prepareStatement(
                     SqlCommandRepository.get("select.report.product.000"))) {
 

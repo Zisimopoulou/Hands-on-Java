@@ -28,7 +28,7 @@ public class OrderRepository implements CRUDRepository<Order>{
 
     @Override
     public void delete(Order order) throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("delete.table.order.000"))) {
 
@@ -49,9 +49,9 @@ public class OrderRepository implements CRUDRepository<Order>{
 
     @Override
     public Order create(Order order) throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get("insert.table.order.000"), new String[]{"id"})) {
+                     SqlCommandRepository.get("insert.table.orders.000"), new String[]{"id"})) {
 
             log.debug("Creating order {}", order);
 
@@ -71,7 +71,7 @@ public class OrderRepository implements CRUDRepository<Order>{
     }
 
     public OrderItem createOrderItem(OrderItem orderItem) throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("insert.table.orderitem.000"), new String[]{"id"})) {
 

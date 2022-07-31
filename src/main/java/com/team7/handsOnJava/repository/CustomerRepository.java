@@ -23,7 +23,7 @@ public class CustomerRepository implements CRUDRepository<Customer>{
     }
 
     public void delete(Customer customer) throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("delete.table.customer.000"))) {
             log.debug("Deleting customer with ID = {}", customer);
@@ -40,15 +40,13 @@ public class CustomerRepository implements CRUDRepository<Customer>{
     }
 
     public Customer create(Customer customer) throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("insert.table.customer.000"), new String[]{"id"})) {
             log.debug("Creating customer {}", customer);
             preparedStatement.setString(1, customer.getCustomerName());
             preparedStatement.setString(2, customer.getCustomerEmail());
-            preparedStatement.setObject(3, customer.getCustomerPaymentMethod());
-            preparedStatement.setObject(4, customer.getCustomerAddress());
-            preparedStatement.setObject(5, customer.getTypeOfCustomer());
+
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             generatedKeys.next();
@@ -75,7 +73,7 @@ public class CustomerRepository implements CRUDRepository<Customer>{
     }
 
     public Customer update(Customer customer) throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get("update.table.customer.000"))) {
             log.debug("Updating customer {} with customerID={}", customer, customer.getId());
@@ -92,7 +90,7 @@ public class CustomerRepository implements CRUDRepository<Customer>{
     }
 
     public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesPerCustomer() throws EshopException {
-        try (Connection connection = DataSource.getConnection();
+        try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedstatement = connection.prepareStatement(
                      SqlCommandRepository.get("select.report.customer.001"))) {
             log.debug("Finding total number and cost of purchases per customer." );
