@@ -2,6 +2,8 @@ package com.team7.handsOnJava.repository;
 
 import com.team7.handsOnJava.exception.EshopException;
 import java.util.ArrayList;
+
+import com.team7.handsOnJava.model.Order;
 import lombok.extern.slf4j.Slf4j;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -79,7 +81,24 @@ public class ProductRepository implements CRUDRepository<Product> {
 
     @Override
     public Product create(Product product) throws EshopException {
-        return null;
+        try (Connection connection = HikariConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommands.get("insert.table.product.000"), new String[]{"id"})) {
+
+            log.debug("Creating product.");
+
+            preparedStatement.setString(1, product.getProductName());
+            preparedStatement.setBigDecimal(2, product.getProductPrice());
+            preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            product.setId(String.valueOf(generatedKeys.getLong(1)));
+
+            return product;
+        } catch (SQLException e) {
+            throw new EshopException("Unable to create product.", e);
+        }
     }
 
     @Override

@@ -28,8 +28,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
     @Override
     public Product create(Product product) throws EshopException {
         log.debug("Creating product {}.", product);
-        super.create(product);
-        throw new EshopException("Product rejected.");
+        return super.create(product);
     }
 
     @Override
