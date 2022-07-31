@@ -102,18 +102,18 @@ public class Showcases{
             }
         }
     }
-    public void reportingShowcase(Product product, Customer customer) throws EshopException {
-        log.info("------------------Reporting Showcases------------------");
-
-        log.info("------------------Total number and cost of purchases for a particular product------------------");
-        Map reportProduct = reportingService.findTotNumAndCostOfPurchasesProduct(product);
-        log.info("Product with ID = {} : Total quantity, Cost of Purchases = {}", reportProduct.keySet(), reportProduct.values());
-
-        log.info("------------------Total number and cost of purchases for a particular product------------------");
-        Map reportPerCustomer = reportingService.findTotNumAndCostOfPurchasesPerCustomer();
-        for (Object i : reportPerCustomer.keySet()) {
-            log.info("Customer with ID = {} : Total quantity, Cost of Purchases = {}", reportPerCustomer.keySet(), reportProduct.values());
-        }
-    }
+//    public void reportingShowcase(Product product, Customer customer) throws EshopException {
+//        log.info("------------------Reporting Showcases------------------");
+//
+//        log.info("------------------Total number and cost of purchases for a particular product------------------");
+//        Map reportProduct = reportingService.findTotNumAndCostOfPurchasesProduct(product);
+//        log.info("Product with ID = {} : Total quantity, Cost of Purchases = {}", reportProduct.keySet(), reportProduct.values());
+//
+//        log.info("------------------Total number and cost of purchases for a particular customer------------------");
+//        Map reportPerCustomer = reportingService.findTotNumAndCostOfPurchasesPerCustomer();
+//        for (Object i : reportPerCustomer.keySet()) {
+//            log.info("Customer with ID = {} : Total quantity, Cost of Purchases = {}", reportPerCustomer.keySet(), reportProduct.values());
+//        }
+//    }
 }
 
