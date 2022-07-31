@@ -59,17 +59,8 @@ public class ProductServiceImpl extends BaseServiceImpl<Product> implements Prod
     }
 
     @Override
-    public boolean update(Product product) throws EshopException {
-        boolean isUpdated = false;
-        if (product.getProductPrice() != null) {
-            isUpdated = productRepository.update(product);
-            if (isUpdated) {
-                String id = product.getProductId();
-                Optional<Product> previouslyPersistedUnits = findByID(id);
-
-            }
-        }
-        return false;
+    public void update(Product product) throws EshopException {
+        productRepository.update(product);
     }
 
     @Override

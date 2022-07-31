@@ -13,5 +13,5 @@ import java.util.Optional;
 
 public interface ProductService extends BaseService<Product> {
      Optional<Product> findByID(String s) throws EshopException;
-     boolean update(Product product) throws EshopException;
+     void update(Product product) throws EshopException;
 }

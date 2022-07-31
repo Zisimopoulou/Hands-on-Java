@@ -7,17 +7,21 @@ import com.team7.handsOnJava.model.OrderItem;
 import com.team7.handsOnJava.model.Product;
 import com.team7.handsOnJava.repository.CustomerRepository;
 import com.team7.handsOnJava.repository.OrderRepository;
+import com.team7.handsOnJava.repository.ProductRepository;
 import com.team7.handsOnJava.service.CustomerServiceImpl;
 import com.team7.handsOnJava.service.OrderServiceImpl;
+import com.team7.handsOnJava.service.ProductServiceImpl;
 import com.team7.handsOnJava.service.ReportingService;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-//Βγάζει errors και δεν προλάβαμε να διορθώσουμε τα queries.
+
 @Slf4j
 public class Showcases{
     private static final CustomerServiceImpl customerService = new CustomerServiceImpl(new CustomerRepository());
+    private static final ProductServiceImpl productService = new ProductServiceImpl(new ProductRepository());
     private static final OrderServiceImpl orderService = new OrderServiceImpl(new OrderRepository());
     private static final ReportingService reportingService = new ReportingService();
 
@@ -28,6 +32,7 @@ public class Showcases{
 
             log.info("------------------Create Customer in Database------------------");
             customerService.create(customer);
+            customerService.create(customers.get(1));
 
             log.info("------------------Delete customer with ID = {}------------------", customerShowcase.getId());
             customers= customerService.deleteCustomer(customerShowcase.getId(), customers);
@@ -36,6 +41,20 @@ public class Showcases{
             log.error("Unable to complete customer Showcase.", e);
         }
     }
+    public static void productShowcase(List<Product> products) {
+        try {
+            log.info("------------------Product Showcase------------------");
+
+            log.info("------------------Create products in database------------------");
+            for (int i=0;i<products.size();i++) {
+                productService.create(products.get(i));
+            }
+
+        } catch (EshopException e) {
+            log.error("Unable to complete customer Showcase.", e);
+        }
+    }
+
 
     public void orderShowcase(List<Order> orders, List<OrderItem> orderItems, Product product) {
         try {

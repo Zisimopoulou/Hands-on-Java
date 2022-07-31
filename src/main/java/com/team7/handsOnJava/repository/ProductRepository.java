@@ -1,6 +1,8 @@
 package com.team7.handsOnJava.repository;
 
 import com.team7.handsOnJava.exception.EshopException;
+
+import java.sql.Date;
 import java.util.ArrayList;
 
 import com.team7.handsOnJava.model.Order;
@@ -132,20 +134,20 @@ public class ProductRepository implements CRUDRepository<Product> {
         return false;
     }
 
-    public boolean update(Product product) throws EshopException {
-            try (Connection connection = HikariConnection.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(
-                         SqlCommands.get("delete.table.product.000"))) {
+    public void update(Product product) throws EshopException {
+        try (Connection connection = HikariConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommands.get("update.table.product.000"))) {
 
-                preparedStatement.setBigDecimal(1, product.getProductPrice());
+            log.debug("Updating product with ID={}", product.getId());
 
+            preparedStatement.setString(1, product.getProductName());
+            preparedStatement.setBigDecimal(2, product.getProductPrice());
+            preparedStatement.setLong(3, Long.parseLong(product.getId()));
 
-                int rowAffected = preparedStatement.executeUpdate();
-                log.trace("{} product {}.", rowAffected == 1 ? "Deleted" : "Failed to delete", product);
-                return rowAffected == 1;
-            } catch (SQLException e) {
-                throw new EshopException("Could not delete product.", e);
-            }
+        } catch (SQLException e) {
+            throw new EshopException("Could not update student", e);
+        }
         }
 
     public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
