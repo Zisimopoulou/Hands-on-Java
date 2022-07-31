@@ -1,30 +1,14 @@
 package com.team7.handsOnJava.repository;
 
-
 import com.team7.handsOnJava.exception.EshopException;
-import com.team7.handsOnJava.model.*;
-
 import java.util.ArrayList;
-
 import lombok.extern.slf4j.Slf4j;
-
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-
-import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Product;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import lombok.extern.slf4j.Slf4j;
-
 import static com.team7.handsOnJava.model.Product.*;
 
 @Slf4j
@@ -35,7 +19,7 @@ public class ProductRepository implements CRUDRepository<Product> {
 
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommands.get(""))) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Product> products = new ArrayList<>();
 
@@ -53,13 +37,12 @@ public class ProductRepository implements CRUDRepository<Product> {
         }
     }
 
-
     @Override
     public Optional<Product> findByID(String aString) {
 
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommands.get(""))) {
             preparedStatement.setString(1, aString);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.getString("id").isEmpty()) {
@@ -73,12 +56,11 @@ public class ProductRepository implements CRUDRepository<Product> {
         }
     }
 
-
     @Override
     public void delete(Product product) throws EshopException {
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get("delete.table.product.000"))) {
+                     SqlCommands.get("delete.table.product.000"))) {
 
             preparedStatement.setString(1, product.getProductId());
             preparedStatement.setBigDecimal(2, product.getProductPrice());
@@ -105,7 +87,7 @@ public class ProductRepository implements CRUDRepository<Product> {
         ArrayList<Product> prod = new ArrayList<>();
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get("insert.table.product.000"), new String[]{"id"})) {
+                     SqlCommands.get("insert.table.product.000"), new String[]{"id"})) {
 
             for (Product product : products) {
 
@@ -134,7 +116,7 @@ public class ProductRepository implements CRUDRepository<Product> {
     public boolean update(Product product) throws EshopException {
             try (Connection connection = HikariConnection.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(
-                         SqlCommandRepository.get("delete.table.product.000"))) {
+                         SqlCommands.get("delete.table.product.000"))) {
 
                 preparedStatement.setBigDecimal(1, product.getProductPrice());
 
@@ -150,7 +132,7 @@ public class ProductRepository implements CRUDRepository<Product> {
     public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
         try(Connection connection = HikariConnection.getConnection();
             PreparedStatement preparedstatement = connection.prepareStatement(
-                    SqlCommandRepository.get("select.report.product.000"))) {
+                    SqlCommands.get("select.report.product.000"))) {
 
             log.debug("Finding total number and cost of purchases for a particular product with product ID={}",product.getId());
 

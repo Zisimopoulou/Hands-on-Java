@@ -2,11 +2,8 @@ package com.team7.handsOnJava.repository;
 
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Order;
-
 import com.team7.handsOnJava.model.OrderItem;
-import com.team7.handsOnJava.model.Product;
 import lombok.extern.slf4j.Slf4j;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +27,7 @@ public class OrderRepository implements CRUDRepository<Order>{
     public void delete(Order order) throws EshopException {
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get("delete.table.order.000"))) {
+                     SqlCommands.get("delete.table.order.000"))) {
 
             log.debug("Deleting order with ID = {}", order);
 
@@ -51,7 +48,7 @@ public class OrderRepository implements CRUDRepository<Order>{
     public Order create(Order order) throws EshopException {
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get("insert.table.orders.000"), new String[]{"id"})) {
+                     SqlCommands.get("insert.table.orders.000"), new String[]{"id"})) {
 
             log.debug("Creating order {}", order);
 
@@ -73,7 +70,7 @@ public class OrderRepository implements CRUDRepository<Order>{
     public OrderItem createOrderItem(OrderItem orderItem) throws EshopException {
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get("insert.table.orderitem.000"), new String[]{"id"})) {
+                     SqlCommands.get("insert.table.orderitem.000"), new String[]{"id"})) {
 
             log.debug("Creating order item with ID {}", orderItem.getId());
 

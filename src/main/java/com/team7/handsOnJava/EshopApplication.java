@@ -29,6 +29,7 @@ public class EshopApplication {
     private static final CustomerServiceImpl customerService = new CustomerServiceImpl(new CustomerRepository());
     private static final ReportingService reportingService = new ReportingService();
     private static final Properties sqlCommands = new Properties();
+
     public static void main(String[] args) {
         EshopApplication eshopApplication = new EshopApplication();
     }
@@ -37,7 +38,6 @@ public class EshopApplication {
         initializeDatabase();
 
         List<Customer> customers = ExamplesCreation.customerCreation();
-        System.out.print(customers.get(0).getCustomerAddress().getId());
         List<Product> products = ExamplesCreation.productCreation();
         List<Order> orders = ExamplesCreation.orderCreation(customers);
         List<OrderItem> orderItems = ExamplesCreation.orderItemCreation(orders, products);
