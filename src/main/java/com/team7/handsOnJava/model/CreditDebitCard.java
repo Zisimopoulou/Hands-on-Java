@@ -11,7 +11,7 @@ public class CreditDebitCard{
     private String cardNo, cardDate, cardCvv;
     private BigDecimal discount;
     public CreditDebitCard(String cardNo, String cardDate, String cardCvv) {
-        this.discount= BigDecimal.valueOf(1.5);
+        this.discount= BigDecimal.valueOf(0.15);
         this.cardNo= cardNo;
         this.cardDate= cardDate;
         this.cardCvv= cardCvv;

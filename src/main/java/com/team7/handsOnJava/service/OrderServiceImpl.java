@@ -141,15 +141,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
         switch (order.getChosenPaymentMethod()) {
             case "wireTransfer":
                 log.info("Payment with wire transfer.");
-                discountPayment = order.getCustomer().getCustomerPaymentMethod().getWireTransfer().getDiscount();
+                discountPayment = BigDecimal.valueOf(0.1);
                 break;
             case "creditCard":
                 log.info("Payment using debit credit card.");
-                discountPayment = order.getCustomer().getCustomerPaymentMethod().getCreditDebitCard().getDiscount();
+                discountPayment = BigDecimal.valueOf(0.15);
                 break;
             case "cash":
                 log.info("Payment with cash.");
-                discountPayment = order.getCustomer().getCustomerPaymentMethod().getCash().getDiscount();
+                discountPayment = BigDecimal.valueOf(0);
                 break;
         }
         return discountPayment;
