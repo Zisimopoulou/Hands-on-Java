@@ -88,18 +88,18 @@ public class CustomerRepository implements CRUDRepository<Customer>{
         }
     }
 
-    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesPerCustomer() throws EshopException {
+    public Map<String, ArrayList<String>> findTotNumAndCostOfPurchasesPerCustomer() throws EshopException {
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedstatement = connection.prepareStatement(
                      SqlCommands.get("select.report.customer.001"))) {
             log.debug("Finding total number and cost of purchases per customer." );
             ResultSet resultSet = preparedstatement.executeQuery();
-            final HashMap<Long, ArrayList<Long>> totNumAndCostOfPurchasesProduct = new HashMap<>();
+            final HashMap<String, ArrayList<String>> totNumAndCostOfPurchasesProduct = new HashMap<>();
             while (resultSet.next()) {
-                ArrayList<Long> list = new ArrayList<>();
-                list.add(resultSet.getLong("total_quantity"));
-                list.add(resultSet.getLong("total_price"));
-                totNumAndCostOfPurchasesProduct.put(resultSet.getLong("customer_id"), list);
+                ArrayList<String> list = new ArrayList<>();
+                list.add(resultSet.getString("total_quantity"));
+                list.add(resultSet.getString("total_price"));
+                totNumAndCostOfPurchasesProduct.put(resultSet.getString("customer_id"), list);
                 list.remove(0);
                 list.remove(1);
             }

@@ -150,7 +150,7 @@ public class ProductRepository implements CRUDRepository<Product> {
         }
         }
 
-    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
+    public Map<String, ArrayList<String>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
         try(Connection connection = HikariConnection.getConnection();
             PreparedStatement preparedstatement = connection.prepareStatement(
                     SqlCommands.get("select.report.product.000"))) {
@@ -160,11 +160,11 @@ public class ProductRepository implements CRUDRepository<Product> {
             preparedstatement.setString(1, product.getId());
 
             ResultSet resultSet = preparedstatement.executeQuery();
-            final HashMap<Long, ArrayList<Long>> totNumAndCostOfPurchasesProduct = new HashMap<>();
-            ArrayList<Long> list = new ArrayList<>();
-            list.add(resultSet.getLong("total_quantity"));
-            list.add(resultSet.getLong("total_price"));
-            totNumAndCostOfPurchasesProduct.put(resultSet.getLong("product_id"),list);
+            final HashMap<String, ArrayList<String>> totNumAndCostOfPurchasesProduct = new HashMap<>();
+            ArrayList<String> list = new ArrayList<>();
+            list.add(resultSet.getString("total_quantity"));
+            list.add(resultSet.getString("total_price"));
+            totNumAndCostOfPurchasesProduct.put(resultSet.getString("product_id"),list);
 
             return totNumAndCostOfPurchasesProduct;
 

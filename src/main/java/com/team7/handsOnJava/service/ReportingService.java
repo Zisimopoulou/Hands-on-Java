@@ -16,18 +16,18 @@ public class ReportingService {
     private CustomerRepository customerRepository;
     private ProductRepository productRepository;
 
-    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
+    public Map<String, ArrayList<String>> findTotNumAndCostOfPurchasesProduct(Product product) throws EshopException {
         log.info("Finding total number and cost of purchases for the product with ID = {}",product.getId());
         return productRepository.findTotNumAndCostOfPurchasesProduct(product);
     }
 /*
-    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesProduct(Customer customer) throws EshopException {
+    public Map<String, ArrayList<String>> findTotNumAndCostOfPurchasesProduct(Customer customer) throws EshopException {
         log.info("Finding total number and cost of purchases for the product with ID = {}",customer.getId());
         return customerRepository.findTotNumAndCostOfPurchasesCustomer(customer);
     }
     */
 
-    public Map<Long, ArrayList<Long>> findTotNumAndCostOfPurchasesPerCustomer() throws EshopException {
+    public Map<String, ArrayList<String>> findTotNumAndCostOfPurchasesPerCustomer() throws EshopException {
         log.info("Finding total number and cost of purchases per customer.");
         return customerRepository.findTotNumAndCostOfPurchasesPerCustomer();
     }
