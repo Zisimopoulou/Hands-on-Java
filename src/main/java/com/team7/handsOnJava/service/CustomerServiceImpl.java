@@ -51,15 +51,12 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer> implements Cu
     public void changeAddress(Customer customer,  CustomerAddress address){
         customer.setCustomerAddress(address);
     }
-    public void changeCreditDebitCard(Customer customer,  CreditDebitCard creditDebitCard){
-        customer.getCustomerPaymentMethod().setCreditDebitCard(creditDebitCard);
-    }
-    public void changeCash(Customer customer, Cash cash){
-        customer.getCustomerPaymentMethod().setCash(cash);
-    }
-    public void changeWireTransfer(Customer customer, WireTransfer wireTransfer){
-        customer.getCustomerPaymentMethod().setWireTransfer(wireTransfer);
-    }
+//    public void changeCreditDebitCard(Customer customer,  CreditDebitCard creditDebitCard){
+//        customer.getCustomerPaymentMethod().setCreditDebitCard(creditDebitCard);
+//    }
+//    public void changeWireTransfer(Customer customer, WireTransfer wireTransfer){
+//        customer.getCustomerPaymentMethod().setWireTransfer(wireTransfer);
+//    }
 
     public List<Customer> deleteCustomer(String customerID, List<Customer> customers) throws EshopException {
         log.info("Deleting customer.");

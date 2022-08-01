@@ -16,9 +16,8 @@ public interface CustomerService extends BaseService<Customer>{
     }
     void changeEmail(Customer customer, String newEmail);
     void changeAddress(Customer customer,  CustomerAddress address);
-    void changeCreditDebitCard(Customer customer,  CreditDebitCard creditDebitCard);
-    void changeCash(Customer customer, Cash cash);
-    void changeWireTransfer(Customer customer, WireTransfer wireTransfer);
+//    void changeCreditDebitCard(Customer customer,  CreditDebitCard creditDebitCard);
+//    void changeWireTransfer(Customer customer, WireTransfer wireTransfer);
     List<Customer> deleteCustomer(String customerID, List<Customer> customers) throws EshopException;
 
 }

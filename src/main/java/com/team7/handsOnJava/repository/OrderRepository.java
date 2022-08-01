@@ -53,7 +53,7 @@ public class OrderRepository implements CRUDRepository<Order>{
             log.debug("Creating order.");
 
             preparedStatement.setString(1, order.getStatus());
-            preparedStatement.setString(2, order.getChosenPaymentMethod());
+            preparedStatement.setString(2, order.getPaymentMethod().getPayment());
             preparedStatement.setString(3, order.getCustomer().getId());
             preparedStatement.executeUpdate();
 

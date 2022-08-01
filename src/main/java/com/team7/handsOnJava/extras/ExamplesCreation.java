@@ -1,5 +1,6 @@
 package com.team7.handsOnJava.extras;
 
+import com.team7.handsOnJava.enums.TypeOfCustomer;
 import com.team7.handsOnJava.model.*;
 import com.team7.handsOnJava.repository.OrderRepository;
 import com.team7.handsOnJava.service.OrderServiceImpl;
@@ -26,14 +27,14 @@ public class ExamplesCreation {
     public static List<Customer> customerCreation() {
         List<Customer> customers = new ArrayList<>();
         CustomerAddress AlexandraAddress = new CustomerAddress("1", "Plapouta", 31L, 3L);
-        CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261", "3/2025", "538");
-        WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927", "GR8501442972218564578227146", "Wired Transfer");
-        Cash AlexandraCash = new Cash();
-        B2bBusiness AlexandraB2bBusiness = new B2bBusiness("Business");
-
-        CustomerPaymentMethod AlexandraPaymentMethod = new CustomerPaymentMethod("1", AlexandraCard, AlexandraWireTransfer, AlexandraCash);
-        Customer Alexandra = new Customer("1", "Alex", "zisi@zisi.com", AlexandraAddress, AlexandraPaymentMethod, AlexandraB2bBusiness);
-        Customer Helena = new Customer("2", "Alex", "zisi@zisi.com", AlexandraAddress, AlexandraPaymentMethod, AlexandraB2bBusiness);
+//        CreditDebitCard AlexandraCard = new CreditDebitCard("4024007167567261", "3/2025", "538");
+//        WireTransfer AlexandraWireTransfer = new WireTransfer("GR9801442425955253818659927", "GR8501442972218564578227146", "Wired Transfer");
+//        Cash AlexandraCash = new Cash();
+//        B2bBusiness AlexandraB2bBusiness = new B2bBusiness("Business");
+//
+//        CustomerPaymentMethod AlexandraPaymentMethod = new CustomerPaymentMethod("1", AlexandraCard, AlexandraWireTransfer, AlexandraCash);
+        Customer Alexandra = new Customer("1", "Alex", "zisi@zisi.com", AlexandraAddress, TypeOfCustomer.B2bBusiness);
+        Customer Helena = new Customer("2", "Helena", "helena@zisi.com", AlexandraAddress, TypeOfCustomer.B2gGovernment);
         customers.add(Alexandra);
         customers.add(Helena);
         return customers;

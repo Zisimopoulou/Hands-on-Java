@@ -78,9 +78,7 @@ public class CustomerRepository implements CRUDRepository<Customer>{
             log.debug("Updating customer {} with customerID={}", customer, customer.getId());
             preparedStatement.setString(1, customer.getCustomerName());
             preparedStatement.setString(2, customer.getCustomerEmail());
-            preparedStatement.setObject(3, customer.getCustomerPaymentMethod());
-            preparedStatement.setObject(4, customer.getCustomerAddress());
-            preparedStatement.setObject(5, customer.getTypeOfCustomer());
+            preparedStatement.setString(3, customer.getId());
             preparedStatement.executeUpdate();
             return customer;
         } catch (SQLException e) {

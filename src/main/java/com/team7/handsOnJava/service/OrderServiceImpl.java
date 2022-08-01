@@ -138,31 +138,40 @@ public class OrderServiceImpl extends BaseServiceImpl<Order> implements OrderSer
     @Override
     public BigDecimal DiscountPaymentMethod(Order order) {
         BigDecimal discountPayment = BigDecimal.valueOf(0);
-        switch (order.getChosenPaymentMethod()) {
-            case "wireTransfer":
+        switch (order.getPaymentMethod()) {
+            case WIRETRANSFER:
                 log.info("Payment with wire transfer.");
-                discountPayment = BigDecimal.valueOf(0.1);
+                discountPayment = order.getPaymentMethod().getDiscount();
                 break;
-            case "creditCard":
+            case CREDITCARD:
                 log.info("Payment using debit credit card.");
-                discountPayment = BigDecimal.valueOf(0.15);
+                discountPayment = order.getPaymentMethod().getDiscount();
                 break;
-            case "cash":
+            case CASH:
                 log.info("Payment with cash.");
-                discountPayment = BigDecimal.valueOf(0);
+                discountPayment = order.getPaymentMethod().getDiscount();
                 break;
         }
         return discountPayment;
     }
     @Override
     public BigDecimal DiscountTypeOfCustomer(Order order) {
-        if (order.getCustomer().getTypeOfCustomer() instanceof B2cIndividual) {
-            return BigDecimal.valueOf(0);
-        } else if (order.getCustomer().getTypeOfCustomer() instanceof B2bBusiness) {
-            return BigDecimal.valueOf(0.2);
-        } else {
-            return BigDecimal.valueOf(0.5);
+        BigDecimal discountPayment = BigDecimal.valueOf(0);
+        switch (order.getCustomer().getTypeOfCustomer()) {
+            case B2bBusiness:
+                log.info("Business customer.");
+                discountPayment = order.getCustomer().getTypeOfCustomer().getDiscount();
+                break;
+            case B2cIndividual:
+                log.info("Individual customer.");
+                discountPayment = order.getCustomer().getTypeOfCustomer().getDiscount();
+                break;
+            case B2gGovernment:
+                log.info("Goverment customer.");
+                discountPayment = order.getCustomer().getTypeOfCustomer().getDiscount();
+                break;
         }
+        return discountPayment;
     }
     @Override
     public BigDecimal FinalPriceOfOrderItem(Order order,Product product)  {
