@@ -1,5 +1,6 @@
 package com.team7.handsOnJava.service;
 
+import com.team7.handsOnJava.enums.TypeOfCustomer;
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.*;
 import com.team7.handsOnJava.repository.CRUDRepository;
@@ -51,13 +52,12 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer> implements Cu
     public void changeAddress(Customer customer,  CustomerAddress address){
         customer.setCustomerAddress(address);
     }
-//    public void changeCreditDebitCard(Customer customer,  CreditDebitCard creditDebitCard){
-//        customer.getCustomerPaymentMethod().setCreditDebitCard(creditDebitCard);
-//    }
-//    public void changeWireTransfer(Customer customer, WireTransfer wireTransfer){
-//        customer.getCustomerPaymentMethod().setWireTransfer(wireTransfer);
-//    }
-
+    public CustomerAddress create(Customer customer, CustomerAddress customerAddress) throws EshopException{
+        return customerRepository.create(customer, customerAddress);
+    };
+    public TypeOfCustomer create(Customer customer, TypeOfCustomer typeOfCustomer) throws EshopException{
+        return customerRepository.create(customer, typeOfCustomer);
+    };
     public List<Customer> deleteCustomer(String customerID, List<Customer> customers) throws EshopException {
         log.info("Deleting customer.");
         for (int i=0;i<customers.size();i++) {
