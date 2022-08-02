@@ -9,8 +9,8 @@ import java.sql.SQLException;
 public class HikariConnection {
     // Database URL
     private static final String DB_CONNECTION_URL_FILE_MODE = "jdbc:oracle:thin:@//localhost:1521/XEPDB1";
-    private static final String DB_USERNAME = "alexjava4";
-    private static final String DB_PASSWORD = "Zisi123";
+    private static final String DB_USERNAME = "username";
+    private static final String DB_PASSWORD = "password";
 
     // Hikari created datasource
     private static final HikariDataSource hikariDataSource;
