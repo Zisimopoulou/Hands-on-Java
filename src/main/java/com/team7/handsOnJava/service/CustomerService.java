@@ -1,5 +1,6 @@
 package com.team7.handsOnJava.service;
 
+import com.team7.handsOnJava.enums.TypeOfCustomer;
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.*;
 
@@ -16,8 +17,8 @@ public interface CustomerService extends BaseService<Customer>{
     }
     void changeEmail(Customer customer, String newEmail);
     void changeAddress(Customer customer,  CustomerAddress address);
-//    void changeCreditDebitCard(Customer customer,  CreditDebitCard creditDebitCard);
-//    void changeWireTransfer(Customer customer, WireTransfer wireTransfer);
+    CustomerAddress create(Customer customer, CustomerAddress customerAddress) throws EshopException;
+    TypeOfCustomer create(Customer customer, TypeOfCustomer typeOfCustomer) throws EshopException;
     List<Customer> deleteCustomer(String customerID, List<Customer> customers) throws EshopException;
 
 }
