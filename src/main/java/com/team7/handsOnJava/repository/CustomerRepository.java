@@ -1,7 +1,9 @@
 package com.team7.handsOnJava.repository;
 
+import com.team7.handsOnJava.enums.TypeOfCustomer;
 import com.team7.handsOnJava.exception.EshopException;
 import com.team7.handsOnJava.model.Customer;
+import com.team7.handsOnJava.model.CustomerAddress;
 import lombok.extern.slf4j.Slf4j;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,7 +39,7 @@ public class CustomerRepository implements CRUDRepository<Customer>{
     public void deleteByID(String id) throws EshopException {
 
     }
-
+    @Override
     public Customer create(Customer customer) throws EshopException {
         try (Connection connection = HikariConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -45,7 +47,6 @@ public class CustomerRepository implements CRUDRepository<Customer>{
             log.debug("Creating customer {}", customer);
             preparedStatement.setString(1, customer.getCustomerName());
             preparedStatement.setString(2, customer.getCustomerEmail());
-
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             generatedKeys.next();
@@ -56,6 +57,42 @@ public class CustomerRepository implements CRUDRepository<Customer>{
         }
     }
 
+    public CustomerAddress create(Customer customer, CustomerAddress customerAddress) throws EshopException {
+        try (Connection connection = HikariConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommands.get("insert.table.customeraddress.000"), new String[]{"id"})) {
+            log.debug("Creating customerAddress {}", customerAddress);
+            preparedStatement.setString(1, customerAddress.getStreet());
+            preparedStatement.setLong(2, customerAddress.getNumber());
+            preparedStatement.setLong(3, customerAddress.getFloor());
+            preparedStatement.setString(4, customer.getId());
+            preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            customerAddress.setId(String.valueOf(generatedKeys.getLong(1)));
+            return customerAddress;
+        } catch (SQLException e) {
+            throw new EshopException("Unable to create customerAddress.", e);
+        }
+    }
+
+    public TypeOfCustomer create(Customer customer, TypeOfCustomer typeOfCustomer) throws EshopException {
+        try (Connection connection = HikariConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommands.get("insert.table.typeofcustomer.000"), new String[]{"id"})) {
+            log.debug("Creating typeofcustomer {}", typeOfCustomer);
+            preparedStatement.setBigDecimal(1, typeOfCustomer.getDiscount());
+            preparedStatement.setString(2, customer.getId());
+            preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            return typeOfCustomer;
+        } catch (SQLException e) {
+            throw new EshopException("Unable to create typeOfCustomer.", e);
+        }
+    }
+
+    @Override
     public List<Customer> createAll(Customer... customers) throws EshopException {
         return null;
     }
